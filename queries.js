@@ -20,7 +20,7 @@ module.exports = {
 };
 
 function getAllRegistration(req, res, next) {
-  db.any('select * from registration')
+  db.any('select * from Registration')
     .then(function (data) {
       res.status(200)
         .json({
