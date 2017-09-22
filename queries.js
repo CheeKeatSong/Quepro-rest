@@ -13,10 +13,10 @@ var db = pgp(connectionString);
 
 module.exports = {
   getAllRegistration: getAllRegistration,
-  getSingleRegistration: getSingleRegistration,
-  createRegistration: createRegistration,
-  updateRegistration: updateRegistration,
-  removeRegistration: removeRegistration
+  // getSingleRegistration: getSingleRegistration,
+  // createRegistration: createRegistration,
+  // updateRegistration: updateRegistration,
+  // removeRegistration: removeRegistration
 };
 
 function getAllRegistration(req, res, next) {
