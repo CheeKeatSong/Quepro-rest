@@ -71,13 +71,13 @@ function createRegistration(req, res, next) {
   var password = req.body.password;
   var mobileNumber = req.body.mobileNumber;
 
-  db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verification code)' +
-    'VALUES(DEFAULT, $1, $2, $3, $4, $5, )', [firstName, lastName, email, password, mobileNumber])
+  db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber)' +
+    'VALUES(DEFAULT, $1, $2, $3, $4, $5)', [firstName, lastName, email, password, mobileNumber])
   .then(function () {
     res.status(200)
     .json({
       status: 'success',
-      message: 'Inserted one record of registration'
+      message: 'Inserted one registration'
     });
   })
   .catch(function (err) {
