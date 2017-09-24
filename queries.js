@@ -43,7 +43,7 @@ var db = pgp(connectionString);
 module.exports = {
   getAllRegistration: getAllRegistration,
   // getSingleRegistration: getSingleRegistration,
-  // createRegistration: createRegistration,
+  createRegistration: createRegistration,
   // updateRegistration: updateRegistration,
   // removeRegistration: removeRegistration
 };
@@ -61,4 +61,26 @@ function getAllRegistration(req, res, next) {
     .catch(function (err) {
       return next(err);
     });
+}
+
+function createRegistration(req, res, next) {
+
+  var firstName = req.body.firstName;
+  var lastName = req.body.lastName;
+  var email = req.body.email;
+  var password = req.body.password;
+  var mobileNumber = req.body.mobileNumber;
+
+  db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verification code)' +
+    'VALUES(DEFAULT, $1, $2, $3, $4, $5, )', [firstName, lastName, email, password, mobilenumber])
+  .then(function () {
+    res.status(200)
+    .json({
+      status: 'success',
+      message: 'Inserted one record of registration'
+    });
+  })
+  .catch(function (err) {
+    return next(err);
+  });
 }
