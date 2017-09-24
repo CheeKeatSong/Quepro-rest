@@ -72,7 +72,7 @@ function createRegistration(req, res, next) {
   var mobileNumber = req.body.mobileNumber;
 
   db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verification code)' +
-    'VALUES(DEFAULT, $1, $2, $3, $4, $5, )', [firstName, lastName, email, password, mobilenumber])
+    'VALUES(DEFAULT, $1, $2, $3, $4, $5, )', [firstName, lastName, email, password, mobileNumber])
   .then(function () {
     res.status(200)
     .json({
