@@ -76,7 +76,7 @@ function createRegistration(req, res, next) {
   .then(function () {
 
     var text = require('textbelt');
-    text.send('+60192691128', 'Bonjour!', 'intl', function(err) {
+    text.sendText('+60192691128', 'Bonjour!', 'intl', function(err) {
       console.log(err);
     });
 
