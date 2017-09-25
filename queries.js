@@ -85,25 +85,31 @@ function createRegistration(req, res, next) {
   //   })
   //   .then((message) => console.log(message.sid));
 
-  var text = require('textbelt');
-  text.sendText('+60192691128', 'A sample text message!', undefined, function(err) {
+var text = require('textbelt');
+var opts = {
+  fromAddr: 'quepro@email.com',  // "from" address in received text 
+  fromName: 'QuePro',       // "from" name in received text 
+  region:   'intl',              // region the receiving number is in: 'us', 'canada', 'intl' 
+  subject:  'Your validation number'        // subject of the message 
+}
+
+text.sendText('+60192691128', 'A sample text message!', opts, function(err) {
   if (err) {
     console.log(err);
   }
 });
 
-  db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber)' +
-    'VALUES(DEFAULT, $1, $2, $3, $4, $5)', [firstName, lastName, email, password, mobileNumber])
-  .then(function () {
-
-    res.status(200)
-    .json({
-      status: 'success',
-      message: 'Inserted one registration'
-    });
-  })
-  .catch(function (err) {
-    return next(err);
+db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber)' +
+  'VALUES(DEFAULT, $1, $2, $3, $4, $5)', [firstName, lastName, email, password, mobileNumber])
+.then(function () {
+  res.status(200)
+  .json({
+    status: 'success',
+    message: 'Inserted one registration'
   });
+})
+.catch(function (err) {
+  return next(err);
+});
 
 }
