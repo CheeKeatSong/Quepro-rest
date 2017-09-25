@@ -71,6 +71,7 @@ function createRegistration(req, res, next) {
   var password = req.body.password;
   var mobileNumber = req.body.mobileNumber;
 
+// Send SMS with twilio
   // const accountSid = 'AC9b778d92ad406516f2204e0698134b5d';
   //   const authToken = '2521fd35eab9c2fa1697976a4e9dce59';
 
@@ -85,20 +86,62 @@ function createRegistration(req, res, next) {
   //   })
   //   .then((message) => console.log(message.sid));
 
-var text = require('textbelt');
-var opts = {
-  fromAddr: 'quepro@gmail.com',  // "from" address in received text 
-  fromName: 'QuePro',       // "from" name in received text 
-  region:   'intl',              // region the receiving number is in: 'us', 'canada', 'intl' 
-  subject:  'Your validation number'        // subject of the message 
-}
+// Send SMS with textbelt
+// var text = require('textbelt');
+// var opts = {
+//   fromAddr: 'quepro@gmail.com',  // "from" address in received text 
+//   fromName: 'QuePro',       // "from" name in received text 
+//   region:   'intl',              // region the receiving number is in: 'us', 'canada', 'intl' 
+//   subject:  'Your validation number'        // subject of the message 
+// }
 
-var msg = "";
+// var msg = "";
 
-text.sendText('+6019-2691128', 'A sample text message!', opts, function(err) {
-  if (err) {
-    msg = err;
-  }
+// text.sendText('+6019-2691128', 'A sample text message!', opts, function(err) {
+//   if (err) {
+//     msg = err;
+//   }
+// });
+
+// send email with node mailer
+const nodemailer = require('nodemailer');
+
+// Generate test SMTP service account from ethereal.email
+// Only needed if you don't have a real mail account for testing
+nodemailer.createTestAccount((err, account) => {
+
+    // create reusable transporter object using the default SMTP transport
+    let transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: account.user, // generated ethereal user
+            pass: account.pass  // generated ethereal password
+        }
+    });
+
+    // setup email data with unicode symbols
+    let mailOptions = {
+        from: '"QuePro" <CKSong@quepro.com>', // sender address
+        to: 'cheekeatsong@gmail.com', // list of receivers
+        subject: 'Hello ✔', // Subject line
+        text: 'Hello world?', // plain text body
+        html: '<b>Hello world?</b>' // html body
+    };
+
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('Message sent: %s', info.messageId);
+        // Preview only available when sending through an Ethereal account
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+
+        // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@blurdybloop.com>
+        // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
+    });
 });
 
 db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber)' +
