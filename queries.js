@@ -71,11 +71,7 @@ function createRegistration(req, res, next) {
   var password = req.body.password;
   var mobileNumber = req.body.mobileNumber;
 
-  db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber)' +
-    'VALUES(DEFAULT, $1, $2, $3, $4, $5)', [firstName, lastName, email, password, mobileNumber])
-  .then(function () {
-
-    const accountSid = 'AC9b778d92ad406516f2204e0698134b5d';
+  const accountSid = 'AC9b778d92ad406516f2204e0698134b5d';
     const authToken = '2521fd35eab9c2fa1697976a4e9dce59';
 
     const client = require('twilio')(accountSid, authToken);
@@ -83,11 +79,15 @@ function createRegistration(req, res, next) {
     client.messages
     .create({
       to: '+0192691128',
-      from: 'Sent from a Twilio Trial Account',
+      from: '+0192691128',
       body: "quepro testing",
       mediaUrl: 'https://climacons.herokuapp.com/clear.png',
     })
     .then((message) => console.log(message.sid));
+
+  db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber)' +
+    'VALUES(DEFAULT, $1, $2, $3, $4, $5)', [firstName, lastName, email, password, mobileNumber])
+  .then(function () {
 
     res.status(200)
     .json({
