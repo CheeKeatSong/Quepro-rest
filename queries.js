@@ -132,12 +132,14 @@ function resendEmailCode(req, res, next) {
   var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
   var dat = JSON.stringify(DBdata);
-  
+  var num = parseInt(dat[0].verificationcode);
+  var num1 = parseInt(dat.verificationcode);
+
   var data = {
     from: 'QuePro <CKSong@queuepro.com>',
     to: '0116708@kdu-online.com',
     subject: 'Verify Your Account',
-    text: 'Your QuePro verification code is ' + parseInt(dat[0].verificationcode) + parseInt(dat[0].verificationCode) + parseInt(dat[1].verificationcode)+ dat
+    text: 'Your QuePro verification code is ' + num + num1
   };
 
   mailgun.messages().send(data, function (error, body) {
