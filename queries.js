@@ -1,6 +1,4 @@
 var promise = require('bluebird');
-// send email with node mailer
-const mailer = require('node-mailer');
 
 var options = {
   // Initialization Options
@@ -73,6 +71,23 @@ function createRegistration(req, res, next) {
   var password = req.body.password;
   var mobileNumber = req.body.mobileNumber;
 
+  var mailgun = require("mailgun-js");
+  var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
+  var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
+  var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
+
+  var data = {
+    from: 'QuePro <CKSong@quepro.com>',
+    to: 'cheekeatsong@gmail.com',
+    subject: 'Hello',
+    text: 'Testing some Mailgun awesomness!'
+  };
+
+  mailgun.messages().send(data, function (error, body) {
+    console.log(body);
+  });
+
+
 // Send SMS with twilio
   // const accountSid = 'AC9b778d92ad406516f2204e0698134b5d';
   //   const authToken = '2521fd35eab9c2fa1697976a4e9dce59';
@@ -106,16 +121,6 @@ function createRegistration(req, res, next) {
 // });
 
 
-new mailer.Mail({
-  from: 'quepro@domain.com',
-  to: 'cheekeatsong@gmail.com',
-  subject: 'Validate your new account now!',
-  body: 'Here is your code, enter it on your validation page',
-  callback: function(err, data){
-    console.log(err);
-    console.log(data);
-  }
-});
 
 // Generate test SMTP service account from ethereal.email
 // Only needed if you don't have a real mail account for testing
