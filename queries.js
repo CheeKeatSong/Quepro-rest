@@ -76,7 +76,7 @@ function createRegistration(req, res, next) {
   .then(function () {
 
     var validOptions = {apikey:'oU5w0Egy6/8-xbWi3hxOfAsfbjuHy22KTSSfoIAuYN'};
-    var tl = require('textlocal')(validOptions); tl.sendSMS('60192691128', 'this is a test message', 'QuePro', function (err, data) {});
+    var tl = require('textlocal')(validOptions); tl.sendSMS('+60192691128', 'this is a test message', 'QuePro', function (err, data) {});
 
     res.status(200)
     .json({
