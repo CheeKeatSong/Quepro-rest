@@ -123,7 +123,7 @@ function resendEmailCode(req, res, next) {
   var userId = parseInt(req.params.id);
 
   db.any('select * from Registration where userid = $1', userId)
-  .then(function (data) {
+  .then(function (DBdata) {
 
   // send email with mailgun services - 2
   var mailgun = require("mailgun-js");
@@ -131,11 +131,13 @@ function resendEmailCode(req, res, next) {
   var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
   var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
+  var dat = JSON.stringify(DBdata)
+  
   var data = {
     from: 'QuePro <CKSong@queuepro.com>',
     to: '0116708@kdu-online.com',
     subject: 'Verify Your Account',
-    text: 'Your QuePro verification code is ' + data
+    text: 'Your QuePro verification code is ' + DBdata + dat
   };
 
   mailgun.messages().send(data, function (error, body) {
