@@ -128,6 +128,8 @@ db.none('INSERT INTO registration(userid, firstname, lastname, email, password, 
    text: codes
  }); 
 
+  transporter.close();
+
   // // send email
   // var mailgun = require("mailgun-js");
   // var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
