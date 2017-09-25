@@ -74,8 +74,8 @@ function createRegistration(req, res, next) {
   // verification code generator
   var CodeGenerator = require('node-code-generator');
   var generator = new CodeGenerator();
-  var pattern = 'ABC#+';
-  var howMany = 6;
+  var pattern = '######';
+  var howMany = 1;
   var options = {};
   // Generate an array of random unique codes according to the provided pattern: 
   var codes = generator.generateCodes(pattern, howMany, options);
@@ -171,7 +171,7 @@ function createRegistration(req, res, next) {
 // });
 
 db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
-  'VALUES(DEFAULT, $1, $2, $3, $4, $5)', [firstName, lastName, email, password, mobileNumber, codes])
+  'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, codes])
 .then(function () {
   res.status(200)
   .json({
