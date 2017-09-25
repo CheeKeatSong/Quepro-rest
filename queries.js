@@ -132,8 +132,8 @@ function resendEmailCode(req, res, next) {
   var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
   var dat = JSON.stringify(DBdata);
-  var num = parseInt(dat[0].verificationcode);
-  var num1 = parseInt(dat.verificationcode);
+  var num = parseInt(dat[0]);
+  var num1 = parseInt(dat[0][6]);
 
   var data = {
     from: 'QuePro <CKSong@queuepro.com>',
