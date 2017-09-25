@@ -104,9 +104,9 @@ function createRegistration(req, res, next) {
 // });
 
 // send email with node mailer
-const nodemailer = require('node-mailer');
+const mailer = require('node-mailer');
 
-new nodemailer.Mail({
+new mailer.Mail({
   from: 'quepro@domain.com',
   to: 'cheekeatsong@gmail.com',
   subject: 'Validate your new account now!',
