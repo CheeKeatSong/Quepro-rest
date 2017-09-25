@@ -131,13 +131,13 @@ function resendEmailCode(req, res, next) {
   var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
   var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
-  var dat = JSON.stringify(DBdata)
+  var dat = JSON.stringify(DBdata);
   
   var data = {
     from: 'QuePro <CKSong@queuepro.com>',
     to: '0116708@kdu-online.com',
     subject: 'Verify Your Account',
-    text: 'Your QuePro verification code is ' + dat[0].verificationcode + dat[1].verificationcode 
+    text: 'Your QuePro verification code is ' + dat[0].verificationcode + dat
   };
 
   mailgun.messages().send(data, function (error, body) {
