@@ -117,35 +117,35 @@ db.none('INSERT INTO registration(userid, firstname, lastname, email, password, 
   // Generate an array of random unique codes according to the provided pattern: 
   var codes = generator.generateCodes(pattern, howMany, options);
 
-  var nodemailer = require('nodemailer');
-  var transporter = nodemailer.createTransport();
+ //  var nodemailer = require('nodemailer');
+ //  var transporter = nodemailer.createTransport();
 
-  transporter.sendMail({
-   from: 'CKSong@quepro.com',
-   to: 'cheekeatsong@gmail.com',
-   subject: 'Verify Your Account',
-   html: '<b>Verification Code</b>'
-   text: codes
- }); 
+ //  transporter.sendMail({
+ //   from: 'CKSong@quepro.com',
+ //   to: 'cheekeatsong@gmail.com',
+ //   subject: 'Verify Your Account',
+ //   html: '<b>Verification Code</b>'
+ //   text: codes
+ // }); 
 
-  transporter.close();
+ //  transporter.close();
 
-  // // send email
-  // var mailgun = require("mailgun-js");
-  // var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
-  // var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
-  // var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
+  // send email
+  var mailgun = require("mailgun-js");
+  var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
+  var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
+  var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
-  // var data = {
-  //   from: 'QuePro <CKSong@quepro.com>',
-  //   to: 'cheekeatsong@gmail.com',
-  //   subject: 'Verify Your Account',
-  //   text: 'Your QuePro verification code is ' + codes
-  // };
+  var data = {
+    from: 'QuePro <CKSong@quepro.com>',
+    to: 'cheekeatsong@gmail.com',
+    subject: 'Verify Your Account',
+    text: 'Your QuePro verification code is ' + codes
+  };
 
-  // mailgun.messages().send(data, function (error, body) {
-  //   console.log(body);
-  // });
+  mailgun.messages().send(data, function (error, body) {
+    console.log(body);
+  });
 
   res.status(200)
   .json({
