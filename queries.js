@@ -5,35 +5,6 @@ var options = {
   promiseLib: promise
 };
 
-// var pgp = require('pg-promise')(options);
-// var connectionString = 'postgres://localhost:5432/puppies';
-// var db = pgp(connectionString);
-
-// add query functions
-
-// module.exports = {
-//   getAllPuppies: getAllPuppies,
-//   getSinglePuppy: getSinglePuppy,
-//   createPuppy: createPuppy,
-//   updatePuppy: updatePuppy,
-//   removePuppy: removePuppy
-// };
-
-// function getAllPuppies(req, res, next) {
-//   db.any('select * from pups')
-//     .then(function (data) {
-//       res.status(200)
-//         .json({
-//           status: 'success',
-//           data: data,
-//           message: 'Retrieved ALL puppies'
-//         });
-//     })
-//     .catch(function (err) {
-//       return next(err);
-//     });
-// }
-
 var pgp = require('pg-promise')(options);
 var connectionString = 'postgres://fricllllwdgdcz:c662f335a1a8860c37703282aceed22775e180a99935ad6a9b0a06247d0ad4db@ec2-204-236-239-225.compute-1.amazonaws.com:5432/dr861gshs4lib?ssl=true';
 var db = pgp(connectionString);
@@ -45,7 +16,9 @@ module.exports = {
   // getSingleRegistration: getSingleRegistration,
   createRegistration: createRegistration,
   // updateRegistration: updateRegistration,
-  // removeRegistration: removeRegistration
+  // removeRegistration: removeRegistration,
+  resendEmailCode: resendEmailCode,
+  resendSMSCode : resendSMSCode
 };
 
 function getAllRegistration(req, res, next) {
@@ -106,37 +79,99 @@ var accountSid = 'ACc6ba408ad0b43567ab05fb4e01405ed9';
 var authToken = '95c544416ee5345130c78a828c57e9c3'; 
 //require the Twilio module and create a REST client 
 var client = require('twilio')(accountSid, authToken); 
- 
+
 client.messages.create({ 
-    to: "+60192691128", 
-    from: "+15005550006", 
-    body: "Use this code to verify your account."
+  to: "+60192691128", 
+  from: "+15005550006", 
+  body: "Use this code to verify your account."
 }, function(err, message) { 
-    console.log(message.sid); 
+  console.log(message.sid); 
 });
 
-// // Send SMS with textbelt
-// var text = require('textbelt');
-// var opts = {
-//   fromAddr: 'cheekeatsong@gmail.com',  // "from" address in received text 
-//   fromName: 'QuePro',       // "from" name in received text 
-//   region:   'intl',              // region the receiving number is in: 'us', 'canada', 'intl' 
-//   subject:  'Your validation number'        // subject of the message 
-// }
+res.status(200)
+.json({
+  status: 'success',
+  message: 'Inserted one registration'
+});
+})
+  .catch(function (err) {
+    return next(err);
+  });
 
-// var msg = "";
+}
 
-// text.sendText('+60122381128', 'A sample text message!', opts, function(err) {
-//   if (err) {
-//     console.log(err);
-//     msg = err;
-//   }
-// });
+function resendSMSCode(req, res, next) {
 
+  var userId = parseInt(req.params.id);
+
+  db.any('select * from Registration where userid = $1', userId)
+  .then(function (data) {
+
+// SMS verification code
+// Twilio Credentials 
+var accountSid = 'ACc6ba408ad0b43567ab05fb4e01405ed9'; 
+var authToken = '95c544416ee5345130c78a828c57e9c3'; 
+//require the Twilio module and create a REST client 
+var client = require('twilio')(accountSid, authToken); 
+
+client.messages.create({ 
+  to: "+60192691128", 
+  from: "+15005550006", 
+  body: "Use this code to verify your account\n" + data.verificationCode
+}, function(err, message) { 
+  console.log(message.sid); 
+});
+
+res.status(200)
+.json({
+  status: 'success',
+  message: 'Verification code SMS is sent to your phone'
+});
+})
+  .catch(function (err) {
+    return next(err);
+  });
+
+}
+
+function resendEmailCode(req, res, next) {
+
+  var userId = parseInt(req.params.id);
+
+  db.any('select * from Registration where userid = $1', userId)
+  .then(function (data) {
+
+  // send email with mailgun services - 2
+  var mailgun = require("mailgun-js");
+  var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
+  var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
+  var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
+
+  var data = {
+    from: 'QuePro <CKSong@quepro.com>',
+    to: 'cheekeatsong@gmail.com',
+    subject: 'Verify Your Account',
+    text: 'Your QuePro verification code is ' + data.verificationCode
+  };
+
+  mailgun.messages().send(data, function (error, body) {
+    console.log(body);
+  });
+
+  res.status(200)
+  .json({
+    status: 'success',
+    message: 'Verification code SMS is sent to your phone'
+  });
+})
+  .catch(function (err) {
+    return next(err);
+  });
+}
 
 
 // // Send mail with registered email - 1
-//     var nodemailer = require('nodemailer');
+// var nodemailer = require('nodemailer');
 
 // // create reusable transporter object using SMTP transport
 // var transporter = nodemailer.createTransport({
@@ -172,33 +207,3 @@ client.messages.create({
 
 
 
-  // // send email with mailgun services - 2
-  // var mailgun = require("mailgun-js");
-  // var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
-  // var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
-  // var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
-
-  // var data = {
-  //   from: 'QuePro <CKSong@quepro.com>',
-  //   to: 'cheekeatsong@gmail.com',
-  //   subject: 'Verify Your Account',
-  //   text: 'Your QuePro verification code is ' + codes
-  // };
-
-  // mailgun.messages().send(data, function (error, body) {
-  //   console.log(body);
-  // });
-
-
-
-  res.status(200)
-  .json({
-    status: 'success',
-    message: 'Inserted one registration'
-  });
-})
-  .catch(function (err) {
-    return next(err);
-  });
-
-}
