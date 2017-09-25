@@ -93,7 +93,7 @@ var opts = {
   subject:  'Your validation number'        // subject of the message 
 }
 
-text.sendText('60192691128', 'A sample text message!', opts, function(err) {
+text.sendText('0192691128', 'A sample text message!', opts, function(err) {
   if (err) {
     console.log(err);
   }
