@@ -100,24 +100,19 @@ function createRegistration(req, res, next) {
     'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
   .then(function () {
 
-
-var msg = "";
 // Twilio Credentials 
-var accountSid = 'AC9b778d92ad406516f2204e0698134b5d'; 
-var authToken = '2521fd35eab9c2fa1697976a4e9dce59'; 
- 
+var accountSid = 'ACc6ba408ad0b43567ab05fb4e01405ed9'; 
+var authToken = '95c544416ee5345130c78a828c57e9c3'; 
 //require the Twilio module and create a REST client 
 var client = require('twilio')(accountSid, authToken); 
  
 client.messages.create({ 
     to: "+60192691128", 
     from: "+15005550006", 
-    body: "This is the ship that made the Kessel Run in fourteen parsecs?", 
+    body: "Use this code to verify your account."
 }, function(err, message) { 
-msg = message;
     console.log(message.sid); 
 });
-
 
 // // Send SMS with textbelt
 // var text = require('textbelt');
