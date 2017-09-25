@@ -131,7 +131,7 @@ function resendEmailCode(req, res, next) {
   var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
   var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
-  var arr = Object.keys(DBdata).map(function(k) { return obj[k] });
+  var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
 
   var data = {
     from: 'QuePro <CKSong@queuepro.com>',
