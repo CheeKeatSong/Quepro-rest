@@ -100,6 +100,7 @@ function createRegistration(req, res, next) {
     'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
   .then(function () {
 
+// SMS verification code
 // Twilio Credentials 
 var accountSid = 'ACc6ba408ad0b43567ab05fb4e01405ed9'; 
 var authToken = '95c544416ee5345130c78a828c57e9c3'; 
@@ -193,7 +194,7 @@ client.messages.create({
   res.status(200)
   .json({
     status: 'success',
-    message: 'Inserted one registration' + msg
+    message: 'Inserted one registration'
   });
 })
   .catch(function (err) {
