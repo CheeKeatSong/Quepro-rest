@@ -150,7 +150,7 @@ db.none('INSERT INTO registration(userid, firstname, lastname, email, password, 
   res.status(200)
   .json({
     status: 'success',
-    message: 'Inserted one registration' + msg + "<>"
+    message: 'Inserted one registration'
   });
 })
 .catch(function (err) {
