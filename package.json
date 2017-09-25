@@ -16,6 +16,7 @@
     "pg-promise": "^5.9.7",
     "serve-favicon": "~2.4.2",
     "textbelt": "0.0.3",
-    "textlocal": "^0.1.1"
+    "textlocal": "^0.1.1",
+    "twilio": "^3.6.7"
   }
 }
