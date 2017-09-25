@@ -86,22 +86,6 @@ function createRegistration(req, res, next) {
   //   })
   //   .then((message) => console.log(message.sid));
 
-// Send SMS with textbelt
-// var text = require('textbelt');
-// var opts = {
-//   fromAddr: 'quepro@gmail.com',  // "from" address in received text 
-//   fromName: 'QuePro',       // "from" name in received text 
-//   region:   'intl',              // region the receiving number is in: 'us', 'canada', 'intl' 
-//   subject:  'Your validation number'        // subject of the message 
-// }
-
-// var msg = "";
-
-// text.sendText('+6019-2691128', 'A sample text message!', opts, function(err) {
-//   if (err) {
-//     msg = err;
-//   }
-// });
 
   // verification code generator
   var CodeGenerator = require('node-code-generator');
@@ -112,44 +96,61 @@ function createRegistration(req, res, next) {
   // Generate an array of random unique codes according to the provided pattern: 
   var codes = generator.generateCodes(pattern, howMany, options);
 
-
   db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
     'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
   .then(function () {
 
-    var nodemailer = require('nodemailer');
-    
-// create reusable transporter object using SMTP transport
-var transporter = nodemailer.createTransport({
-  service: 'Gmail',
-  auth: {
-    user: 'cheekeatsong@gmail.com',
-    pass: 'sck.5309'
+
+// Send SMS with textbelt
+var text = require('textbelt');
+var opts = {
+  fromAddr: 'cheekeatsong@gmail.com',  // "from" address in received text 
+  fromName: 'QuePro',       // "from" name in received text 
+  region:   'intl',              // region the receiving number is in: 'us', 'canada', 'intl' 
+  subject:  'Your validation number'        // subject of the message 
+}
+
+var msg = "";
+
+text.sendText('+6019-2691128', 'A sample text message!', opts, function(err) {
+  if (err) {
+    msg = err;
   }
 });
 
-// setup e-mail data with unicode symbols
-var mailOptions = {
-// sender address
-from: 'CK Song <cheekeatsong@gmail.com>', 
-// list of receivers
-to: '0116708@kdu-online.com',  
-// Subject line
-subject: 'Verify your account', 
-// plaintext body
-text: 'Your QuePro verification code is ' + codes,
-// rich text html body
-html: "<p>It works</p>",
-};
+//     var nodemailer = require('nodemailer');
 
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, function(error, info){
-      if(error){
-        console.log(error);
-      }else{
-        console.log('Message sent: ' + info.response);
-      }
-    });
+// // create reusable transporter object using SMTP transport
+// var transporter = nodemailer.createTransport({
+//   service: 'Gmail',
+//   auth: {
+//     user: 'cheekeatsong@gmail.com',
+//     pass: 'sck.5309'
+//   }
+// });
+
+// // setup e-mail data with unicode symbols
+// var mailOptions = {
+// // sender address
+// from: 'CK Song <cheekeatsong@gmail.com>', 
+// // list of receivers
+// to: '0116708@kdu-online.com',  
+// // Subject line
+// subject: 'Verify your account', 
+// // plaintext body
+// text: 'Your QuePro verification code is ' + codes,
+// // rich text html body
+// html: "<p>It works</p>",
+// };
+
+//     // send mail with defined transport object
+//     transporter.sendMail(mailOptions, function(error, info){
+//       if(error){
+//         console.log(error);
+//       }else{
+//         console.log('Message sent: ' + info.response);
+//       }
+//     });
 
   // // send email
   // var mailgun = require("mailgun-js");
@@ -167,6 +168,7 @@ html: "<p>It works</p>",
   // mailgun.messages().send(data, function (error, body) {
   //   console.log(body);
   // });
+
 
   res.status(200)
   .json({
