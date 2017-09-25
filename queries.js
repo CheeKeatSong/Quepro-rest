@@ -101,23 +101,37 @@ function createRegistration(req, res, next) {
   .then(function () {
 
 
-// Send SMS with textbelt
-var text = require('textbelt');
-var opts = {
-  fromAddr: 'cheekeatsong@gmail.com',  // "from" address in received text 
-  fromName: 'QuePro',       // "from" name in received text 
-  region:   'intl',              // region the receiving number is in: 'us', 'canada', 'intl' 
-  subject:  'Your validation number'        // subject of the message 
-}
+var client = require('twilio')(
+  process.env.AC9b778d92ad406516f2204e0698134b5d,
+  process.env.2521fd35eab9c2fa1697976a4e9dce59
+);
 
-var msg = "";
+client.messages.create({
+  from: process.env.+15005550006,
+  to: process.env.+60192691128,
+  body: "You just sent an SMS from Node.js using Twilio!"
+}).then((message) => console.log(message.sid));
 
-text.sendText('+60122381128', 'A sample text message!', opts, function(err) {
-  if (err) {
-    console.log(err);
-    msg = err;
-  }
-});
+
+// // Send SMS with textbelt
+// var text = require('textbelt');
+// var opts = {
+//   fromAddr: 'cheekeatsong@gmail.com',  // "from" address in received text 
+//   fromName: 'QuePro',       // "from" name in received text 
+//   region:   'intl',              // region the receiving number is in: 'us', 'canada', 'intl' 
+//   subject:  'Your validation number'        // subject of the message 
+// }
+
+// var msg = "";
+
+// text.sendText('+60122381128', 'A sample text message!', opts, function(err) {
+//   if (err) {
+//     console.log(err);
+//     msg = err;
+//   }
+// });
+
+
 
 // // Send mail with registered email - 1
 //     var nodemailer = require('nodemailer');
@@ -155,6 +169,7 @@ text.sendText('+60122381128', 'A sample text message!', opts, function(err) {
 //     });
 
 
+
   // // send email with mailgun services - 2
   // var mailgun = require("mailgun-js");
   // var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
@@ -171,6 +186,7 @@ text.sendText('+60122381128', 'A sample text message!', opts, function(err) {
   // mailgun.messages().send(data, function (error, body) {
   //   console.log(body);
   // });
+
 
 
   res.status(200)
