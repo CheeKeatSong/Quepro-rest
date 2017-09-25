@@ -90,7 +90,7 @@ function createRegistration(req, res, next) {
     from: 'QuePro <CKSong@quepro.com>',
     to: 'cheekeatsong@gmail.com',
     subject: 'Verify Your Account',
-    text: 'Your QuePro verification code is' + codes
+    text: 'Your QuePro verification code is ' + codes
   };
 
   mailgun.messages().send(data, function (error, body) {
@@ -171,7 +171,7 @@ function createRegistration(req, res, next) {
 // });
 
 db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
-  'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, codes])
+  'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
 .then(function () {
   res.status(200)
   .json({
