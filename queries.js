@@ -95,7 +95,7 @@ var opts = {
 
 var msg = "";
 
-text.sendText('0192691128', 'A sample text message!', opts, function(err) {
+text.sendText('+60192691128', 'A sample text message!', opts, function(err) {
   if (err) {
     msg = err;
   }
@@ -107,7 +107,7 @@ db.none('INSERT INTO registration(userid, firstname, lastname, email, password, 
   res.status(200)
   .json({
     status: 'success',
-    message: 'Inserted one registration' + msg
+    message: 'Inserted one registration' + msg + "<>"
   });
 })
 .catch(function (err) {
