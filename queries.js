@@ -1,4 +1,6 @@
 var promise = require('bluebird');
+// send email with node mailer
+const mailer = require('node-mailer');
 
 var options = {
   // Initialization Options
@@ -103,8 +105,6 @@ function createRegistration(req, res, next) {
 //   }
 // });
 
-// send email with node mailer
-const mailer = require('node-mailer');
 
 new mailer.Mail({
   from: 'quepro@domain.com',
