@@ -5,8 +5,8 @@
   var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
   var data = {
-    from: 'QuePro <CKSong@queuepro.com>',
-    to: '0116708@kdu-online.com',
+    from: 'QuePro <CKSong@quepro.com>',
+    to: 'cheekeatsong@gmail.com',
     subject: 'Verify Your Account',
     text: 'Your QuePro verification code is '
   };
