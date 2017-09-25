@@ -135,7 +135,7 @@ function resendEmailCode(req, res, next) {
     from: 'QuePro <CKSong@queuepro.com>',
     to: '0116708@kdu-online.com',
     subject: 'Verify Your Account',
-    text: 'Your QuePro verification code is ' + 
+    text: 'Your QuePro verification code is ' + body
   };
 
   mailgun.messages().send(data, function (error, body) {
@@ -145,7 +145,7 @@ function resendEmailCode(req, res, next) {
   res.status(200)
   .json({
     status: 'success',
-    message: 'Verification code email is sent to your phone' + data
+    message: 'Verification code email is sent to your phone'
   });
 })
   .catch(function (err) {
