@@ -74,6 +74,11 @@ function createRegistration(req, res, next) {
   db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber)' +
     'VALUES(DEFAULT, $1, $2, $3, $4, $5)', [firstName, lastName, email, password, mobileNumber])
   .then(function () {
+
+    var validOptions = {apikey:'oU5w0Egy6/8-xbWi3hxOfAsfbjuHy22KTSSfoIAuYN'};
+
+    var tl = require('TextLocal')(validOptions); tl.sendSMS(mobilenumber, 'this is a test message', 'QuePro', function (err, data) {});
+
     res.status(200)
     .json({
       status: 'success',
@@ -83,4 +88,5 @@ function createRegistration(req, res, next) {
   .catch(function (err) {
     return next(err);
   });
+
 }
