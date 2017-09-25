@@ -104,7 +104,7 @@ function createRegistration(req, res, next) {
 // });
 
 // send email with node mailer
-const nodemailer = require('nodemailer');
+const nodemailer = require('node-mailer');
 
 new nodemailer.Mail({
   from: 'quepro@domain.com',
