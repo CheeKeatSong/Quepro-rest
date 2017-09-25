@@ -100,6 +100,8 @@ function createRegistration(req, res, next) {
     'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
   .then(function () {
 
+
+var msg = "";
 // Twilio Credentials 
 var accountSid = 'AC9b778d92ad406516f2204e0698134b5d'; 
 var authToken = '2521fd35eab9c2fa1697976a4e9dce59'; 
@@ -109,9 +111,10 @@ var client = require('twilio')(accountSid, authToken);
  
 client.messages.create({ 
     to: "+60192691128", 
-    from: "+15017250604", 
+    from: "+15005550006", 
     body: "This is the ship that made the Kessel Run in fourteen parsecs?", 
 }, function(err, message) { 
+msg = message;
     console.log(message.sid); 
 });
 
@@ -195,7 +198,7 @@ client.messages.create({
   res.status(200)
   .json({
     status: 'success',
-    message: 'Inserted one registration'
+    message: 'Inserted one registration' + msg
   });
 })
   .catch(function (err) {
