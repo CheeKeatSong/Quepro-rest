@@ -117,36 +117,57 @@ function createRegistration(req, res, next) {
     'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
   .then(function () {
 
+    var nodemailer = require('nodemailer');
+    var server = require('./server');
+    server.start();
+// create reusable transporter object using SMTP transport
+var transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: 'cheekeatsong@gmail.com',
+    pass: 'sck.5309'
+  }
+});
 
-  var nodemailer = require('nodemailer');
-  var transporter = nodemailer.createTransport();
+// setup e-mail data with unicode symbols
+var mailOptions = {
+// sender address
+from: 'CK Song <cheekeatsong@gmail.com>', 
+// list of receivers
+to: '0116708@kdu-online.com',  
+// Subject line
+subject: 'Verify your account', 
+// plaintext body
+text: 'Your QuePro verification code is ' + codes,
+// rich text html body
+html: "<p>It works</p>",
+};
 
-  transporter.sendMail({
-   from: 'CKSong@quepro.com',
-   to: 'cheekeatsong@gmail.com',
-   subject: 'Verify Your Account',
-   html: '<b>Verification Code</b>',
-   text: codes
- }); 
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, function(error, info){
+      if(error){
+        console.log(error);
+      }else{
+        console.log('Message sent: ' + info.response);
+      }
+    });
 
-  transporter.close();
+  // // send email
+  // var mailgun = require("mailgun-js");
+  // var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
+  // var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
+  // var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
-  // send email
-  var mailgun = require("mailgun-js");
-  var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
-  var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
-  var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
+  // var data = {
+  //   from: 'QuePro <CKSong@quepro.com>',
+  //   to: 'cheekeatsong@gmail.com',
+  //   subject: 'Verify Your Account',
+  //   text: 'Your QuePro verification code is ' + codes
+  // };
 
-  var data = {
-    from: 'QuePro <CKSong@quepro.com>',
-    to: 'cheekeatsong@gmail.com',
-    subject: 'Verify Your Account',
-    text: 'Your QuePro verification code is ' + codes
-  };
-
-  mailgun.messages().send(data, function (error, body) {
-    console.log(body);
-  });
+  // mailgun.messages().send(data, function (error, body) {
+  //   console.log(body);
+  // });
 
   res.status(200)
   .json({
