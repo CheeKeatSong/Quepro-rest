@@ -87,13 +87,13 @@ function createRegistration(req, res, next) {
 
 var text = require('textbelt');
 var opts = {
-  fromAddr: 'quepro@email.com',  // "from" address in received text 
+  fromAddr: 'quepro@gmail.com',  // "from" address in received text 
   fromName: 'QuePro',       // "from" name in received text 
   region:   'intl',              // region the receiving number is in: 'us', 'canada', 'intl' 
   subject:  'Your validation number'        // subject of the message 
 }
 
-text.sendText('+60192691128', 'A sample text message!', opts, function(err) {
+text.sendText('60192691128', 'A sample text message!', opts, function(err) {
   if (err) {
     console.log(err);
   }
