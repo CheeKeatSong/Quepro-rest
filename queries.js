@@ -95,7 +95,7 @@ var opts = {
 
 var msg = "";
 
-text.sendText('+60192691128', 'A sample text message!', opts, function(err) {
+text.sendText('+6019-2691128', 'A sample text message!', opts, function(err) {
   if (err) {
     msg = err;
   }
