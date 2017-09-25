@@ -50,17 +50,17 @@ module.exports = {
 
 function getAllRegistration(req, res, next) {
   db.any('select * from Registration')
-    .then(function (data) {
-      res.status(200)
-        .json({
-          status: 'success',
-          data: data,
-          message: 'Retrieved ALL registration'
-        });
-    })
-    .catch(function (err) {
-      return next(err);
+  .then(function (data) {
+    res.status(200)
+    .json({
+      status: 'success',
+      data: data,
+      message: 'Retrieved ALL registration'
     });
+  })
+  .catch(function (err) {
+    return next(err);
+  });
 }
 
 function createRegistration(req, res, next) {
@@ -75,8 +75,10 @@ function createRegistration(req, res, next) {
     'VALUES(DEFAULT, $1, $2, $3, $4, $5)', [firstName, lastName, email, password, mobileNumber])
   .then(function () {
 
-    var validOptions = {apikey:'oU5w0Egy6/8-xbWi3hxOfAsfbjuHy22KTSSfoIAuYN'};
-    var tl = require('textlocal')(validOptions); tl.sendSMS('+60192691128', 'this is a test message', 'QuePro', function (err, data) {});
+    var text = require('textbelt');
+    text.send('+60192691128', 'Bonjour!', 'intl', function(err) {
+      console.log(err);
+    });
 
     res.status(200)
     .json({
