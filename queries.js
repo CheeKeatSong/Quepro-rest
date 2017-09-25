@@ -103,11 +103,6 @@ function createRegistration(req, res, next) {
 //   }
 // });
 
-
-db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
-  'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
-.then(function () {
-
   // verification code generator
   var CodeGenerator = require('node-code-generator');
   var generator = new CodeGenerator();
@@ -117,18 +112,22 @@ db.none('INSERT INTO registration(userid, firstname, lastname, email, password, 
   // Generate an array of random unique codes according to the provided pattern: 
   var codes = generator.generateCodes(pattern, howMany, options);
 
- //  var nodemailer = require('nodemailer');
- //  var transporter = nodemailer.createTransport();
+  db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
+    'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
+  .then(function () {
 
- //  transporter.sendMail({
- //   from: 'CKSong@quepro.com',
- //   to: 'cheekeatsong@gmail.com',
- //   subject: 'Verify Your Account',
- //   html: '<b>Verification Code</b>'
- //   text: codes
- // }); 
+  var nodemailer = require('nodemailer');
+  var transporter = nodemailer.createTransport();
 
- //  transporter.close();
+  transporter.sendMail({
+   from: 'CKSong@quepro.com',
+   to: 'cheekeatsong@gmail.com',
+   subject: 'Verify Your Account',
+   html: '<b>Verification Code</b>'
+   text: codes
+ }); 
+
+  transporter.close();
 
   // send email
   var mailgun = require("mailgun-js");
@@ -153,8 +152,8 @@ db.none('INSERT INTO registration(userid, firstname, lastname, email, password, 
     message: 'Inserted one registration'
   });
 })
-.catch(function (err) {
-  return next(err);
-});
+  .catch(function (err) {
+    return next(err);
+  });
 
 }
