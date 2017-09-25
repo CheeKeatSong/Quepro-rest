@@ -118,8 +118,7 @@ function createRegistration(req, res, next) {
   .then(function () {
 
     var nodemailer = require('nodemailer');
-    var server = require('./server');
-    server.start();
+    
 // create reusable transporter object using SMTP transport
 var transporter = nodemailer.createTransport({
   service: 'Gmail',
