@@ -71,19 +71,26 @@ function createRegistration(req, res, next) {
   var password = req.body.password;
   var mobileNumber = req.body.mobileNumber;
 
-  const accountSid = 'AC9b778d92ad406516f2204e0698134b5d';
-    const authToken = '2521fd35eab9c2fa1697976a4e9dce59';
+  // const accountSid = 'AC9b778d92ad406516f2204e0698134b5d';
+  //   const authToken = '2521fd35eab9c2fa1697976a4e9dce59';
 
-    const client = require('twilio')(accountSid, authToken);
+  //   const client = require('twilio')(accountSid, authToken);
 
-    client.messages
-    .create({
-      to: '+0192691128',
-      from: '+0192691128',
-      body: "quepro testing",
-      mediaUrl: 'https://climacons.herokuapp.com/clear.png',
-    })
-    .then((message) => console.log(message.sid));
+  //   client.messages
+  //   .create({
+  //     to: '+0192691128',
+  //     from: '+0192691128',
+  //     body: "quepro testing",
+  //     mediaUrl: 'https://climacons.herokuapp.com/clear.png',
+  //   })
+  //   .then((message) => console.log(message.sid));
+
+  var text = require('textbelt');
+  text.sendText('+60192691128', 'A sample text message!', undefined, function(err) {
+  if (err) {
+    console.log(err);
+  }
+});
 
   db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber)' +
     'VALUES(DEFAULT, $1, $2, $3, $4, $5)', [firstName, lastName, email, password, mobileNumber])
