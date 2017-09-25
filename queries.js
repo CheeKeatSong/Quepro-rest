@@ -44,22 +44,6 @@ function createRegistration(req, res, next) {
   var password = req.body.password;
   var mobileNumber = req.body.mobileNumber;
 
-// Send SMS with twilio
-  // const accountSid = 'AC9b778d92ad406516f2204e0698134b5d';
-  //   const authToken = '2521fd35eab9c2fa1697976a4e9dce59';
-
-  //   const client = require('twilio')(accountSid, authToken);
-
-  //   client.messages
-  //   .create({
-  //     to: '+0192691128',
-  //     from: '+0192691128',
-  //     body: "quepro testing",
-  //     mediaUrl: 'https://climacons.herokuapp.com/clear.png',
-  //   })
-  //   .then((message) => console.log(message.sid));
-
-
   // verification code generator
   var CodeGenerator = require('node-code-generator');
   var generator = new CodeGenerator();
@@ -148,10 +132,10 @@ function resendEmailCode(req, res, next) {
   var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
   var data = {
-    from: 'QuePro <CKSong@quepro.com>',
-    to: 'cheekeatsong@gmail.com',
+    from: 'QuePro <CKSong@queuepro.com>',
+    to: '0116708@kdu-online.com',
     subject: 'Verify Your Account',
-    text: 'Your QuePro verification code is ' + data.verificationCode
+    text: 'Your QuePro verification code is '
   };
 
   mailgun.messages().send(data, function (error, body) {
@@ -161,7 +145,7 @@ function resendEmailCode(req, res, next) {
   res.status(200)
   .json({
     status: 'success',
-    message: 'Verification code SMS is sent to your phone'
+    message: 'Verification code email is sent to your phone'
   });
 })
   .catch(function (err) {

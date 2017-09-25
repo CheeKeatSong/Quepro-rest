@@ -1,33 +1,16 @@
+  // send email with mailgun services - 2
+  var mailgun = require("mailgun-js");
+  var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
+  var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
+  var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
-// Twilio Credentials 
-var accountSid = 'ACc6ba408ad0b43567ab05fb4e01405ed9'; 
-var authToken = '95c544416ee5345130c78a828c57e9c3'; 
-//require the Twilio module and create a REST client 
-var client = require('twilio')(accountSid, authToken); 
- 
-client.messages.create({ 
-    to: "+60192691128", 
-    from: "+15005550006", 
-    body: "Use this code to verify your account."
-}, function(err, message) { 
-    console.log(message.sid); 
-});
+  var data = {
+    from: 'QuePro <CKSong@queuepro.com>',
+    to: '0116708@kdu-online.com',
+    subject: 'Verify Your Account',
+    text: 'Your QuePro verification code is '
+  };
 
-// client.incomingPhoneNumbers.create({
-//     voiceUrl: "http://demo.twilio.com/docs/voice.xml",
-//     phoneNumber: "+15005550006"
-// }, function(err, number) {
-//     process.stdout.write(number.sid);
-// });
-
-// client.messages.create(
-//   {
-//     body: 'All in the game, yo',
-//     to: '+60192691128',
-//     from: '+15005550006',
-//   },
-//   (err, sms) => {
-//   	console.log(sms + '\n' + err);
-//     // process.stdout.write(sms.sid);
-//   }
-// );
+  mailgun.messages().send(data, function (error, body) {
+    console.log(body);
+  });
