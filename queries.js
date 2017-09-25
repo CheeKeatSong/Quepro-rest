@@ -89,7 +89,7 @@ function resendSMSCode(req, res, next) {
   var userId = parseInt(req.params.id);
 
   db.any('select * from Registration where userid = $1', userId)
-  .then(function (data) {
+  .then(function (DBdata) {
 
 // SMS verification code
 // Twilio Credentials 
@@ -137,7 +137,7 @@ function resendEmailCode(req, res, next) {
     from: 'QuePro <CKSong@queuepro.com>',
     to: '0116708@kdu-online.com',
     subject: 'Verify Your Account',
-    text: 'Your QuePro verification code is ' + DBdata + dat
+    text: 'Your QuePro verification code is ' + dat[0].verificationCode 
   };
 
   mailgun.messages().send(data, function (error, body) {
