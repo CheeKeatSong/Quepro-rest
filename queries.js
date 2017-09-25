@@ -114,10 +114,12 @@ var msg = "";
 
 text.sendText('+6019-2691128', 'A sample text message!', opts, function(err) {
   if (err) {
+    console.log(err);
     msg = err;
   }
 });
 
+// // Send mail with registered email - 1
 //     var nodemailer = require('nodemailer');
 
 // // create reusable transporter object using SMTP transport
@@ -152,7 +154,8 @@ text.sendText('+6019-2691128', 'A sample text message!', opts, function(err) {
 //       }
 //     });
 
-  // // send email
+
+  // // send email with mailgun services - 2
   // var mailgun = require("mailgun-js");
   // var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
   // var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
