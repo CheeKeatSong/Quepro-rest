@@ -93,9 +93,11 @@ var opts = {
   subject:  'Your validation number'        // subject of the message 
 }
 
+var msg = "";
+
 text.sendText('0192691128', 'A sample text message!', opts, function(err) {
   if (err) {
-    console.log(err);
+    msg = err;
   }
 });
 
@@ -105,7 +107,7 @@ db.none('INSERT INTO registration(userid, firstname, lastname, email, password, 
   res.status(200)
   .json({
     status: 'success',
-    message: 'Inserted one registration'
+    message: 'Inserted one registration' + msg
   });
 })
 .catch(function (err) {
