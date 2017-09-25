@@ -71,6 +71,16 @@ function createRegistration(req, res, next) {
   var password = req.body.password;
   var mobileNumber = req.body.mobileNumber;
 
+  // verification code generator
+  var CodeGenerator = require('node-code-generator');
+  var generator = new CodeGenerator();
+  var pattern = 'ABC#+';
+  var howMany = 6;
+  var options = {};
+  // Generate an array of random unique codes according to the provided pattern: 
+  var codes = generator.generateCodes(pattern, howMany, options);
+
+  // send email
   var mailgun = require("mailgun-js");
   var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
   var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
@@ -79,8 +89,8 @@ function createRegistration(req, res, next) {
   var data = {
     from: 'QuePro <CKSong@quepro.com>',
     to: 'cheekeatsong@gmail.com',
-    subject: 'Hello',
-    text: 'Testing some Mailgun awesomness!'
+    subject: 'Verify Your Account',
+    text: 'Your QuePro verification code is' + codes
   };
 
   mailgun.messages().send(data, function (error, body) {
@@ -160,8 +170,8 @@ function createRegistration(req, res, next) {
 //     });
 // });
 
-db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber)' +
-  'VALUES(DEFAULT, $1, $2, $3, $4, $5)', [firstName, lastName, email, password, mobileNumber])
+db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
+  'VALUES(DEFAULT, $1, $2, $3, $4, $5)', [firstName, lastName, email, password, mobileNumber, codes])
 .then(function () {
   res.status(200)
   .json({

@@ -14,6 +14,7 @@
     "jade": "~1.11.0",
     "mailgun-js": "^0.13.1",
     "morgan": "~1.8.1",
+    "node-code-generator": "^1.0.3",
     "pg-promise": "^5.9.7",
     "serve-favicon": "~2.4.2",
     "textbelt": "0.0.3",
