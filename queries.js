@@ -73,7 +73,7 @@ function createRegistration(req, res, next) {
   var codes = generator.generateCodes(pattern, howMany, options);
 
   db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
-    'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING id', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
+    'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING userId', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
   .then(function (data) {
 
 // SMS verification code
