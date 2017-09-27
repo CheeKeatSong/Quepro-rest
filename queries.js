@@ -55,7 +55,7 @@ function createRegistration(req, res, next) {
 
   db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
     'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
-  .then(function (data) {
+  .then(function () {
 
 // SMS verification code
 // Twilio Credentials 
@@ -72,17 +72,18 @@ client.messages.create({
   console.log(message.sid); 
 });
 
-res.status(200)
-.json({
-  status: 'success',
-  data: data,
-  message: 'Inserted one registration'
-});
-})
-  .catch(function (err) {
-    return next(err);
+db.any('select * from Registration where email = $1', email)
+.then(function (data) {
+  res.status(200)
+  .json({
+    status: 'success',
+    data: data,
+    message: 'Inserted one registration'
   });
-
+})
+.catch(function (err) {
+  return next(err);
+});
 }
 
 function resendSMSCode(req, res, next) {
