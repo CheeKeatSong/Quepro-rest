@@ -13,7 +13,7 @@ var db = pgp(connectionString);
 
 module.exports = {
   getAllRegistration: getAllRegistration,
-  // getSingleRegistration: getSingleRegistration,
+  getSingleRegistration: getSingleRegistration,
   createRegistration: createRegistration,
   // updateRegistration: updateRegistration,
   // removeRegistration: removeRegistration,
@@ -36,6 +36,25 @@ function getAllRegistration(req, res, next) {
   });
 }
 
+function getSingleRegistration(req, res, next) {
+
+  var email = req.params.id;
+
+  db.any('select * from Registration where userId = $1', userId)
+  .then(function (data) {
+    res.status(200)
+    .json({
+      status: 'success',
+      data: data,
+      message: 'Retrieved ALL registration'
+    });
+  })
+  .catch(function (err) {
+    return next(err);
+  });
+}
+
+
 function createRegistration(req, res, next) {
 
   var firstName = req.body.firstName;
@@ -53,13 +72,9 @@ function createRegistration(req, res, next) {
   // Generate an array of random unique codes according to the provided pattern: 
   var codes = generator.generateCodes(pattern, howMany, options);
 
-  db.tx(function (t){
-    return t.batch([
-      t.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
-        'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, parseInt(codes)]),
-      t.none('select * from Registration where email = $1', email),
-      ]);
-  }).then(function (data) {
+  db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
+    'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING id', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
+  .then(function (data) {
 
 // SMS verification code
 // Twilio Credentials 
@@ -80,12 +95,13 @@ res.status(200)
 .json({
   status: 'success',
   data: data,
-  message: 'Inserted registration'
+  message: 'Inserted one registration'
 });
 })
   .catch(function (err) {
     return next(err);
   });
+
 }
 
 function resendSMSCode(req, res, next) {
