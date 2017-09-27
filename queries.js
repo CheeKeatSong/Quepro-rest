@@ -55,7 +55,7 @@ function createRegistration(req, res, next) {
 
   db.none('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
     'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6)', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
-  .then(function () {
+  .then(function (data) {
 
 // SMS verification code
 // Twilio Credentials 
@@ -75,6 +75,7 @@ client.messages.create({
 res.status(200)
 .json({
   status: 'success',
+  data: data,
   message: 'Inserted one registration'
 });
 })
@@ -98,10 +99,13 @@ var authToken = '95c544416ee5345130c78a828c57e9c3';
 //require the Twilio module and create a REST client 
 var client = require('twilio')(accountSid, authToken); 
 
+var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
+
 client.messages.create({ 
   to: "+60192691128", 
+  // to: '"' + arr[0].mobilenumber '"', 
   from: "+15005550006", 
-  body: "Use this code to verify your account\n" + data.verificationCode
+  body: 'Your QuePro verification code is ' + arr[0].verificationcode
 }, function(err, message) { 
   console.log(message.sid); 
 });
@@ -134,6 +138,7 @@ function resendEmailCode(req, res, next) {
   var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
 
   var data = {
+    // from: '"'QuePro + arr[0].email + '"',
     from: 'QuePro <CKSong@queuepro.com>',
     to: '0116708@kdu-online.com',
     subject: 'Verify Your Account',
