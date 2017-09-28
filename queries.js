@@ -134,7 +134,7 @@ function accountVerification(req, res, next) {
     res.status(200)
     .json({
       status: 'success',
-      data: 'data',
+      data: data,
       message: 'Account Verified'
     });
   })
