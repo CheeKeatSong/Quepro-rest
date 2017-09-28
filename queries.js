@@ -118,7 +118,8 @@ function accountVerification(req, res, next) {
 
     if (arr[0].verificationcode == accountVerificationCode){
 
-      db.one('INSERT INTO User VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber])
+      db.one('INSERT INTO User (userid, firstname, lastname, email, password, mobilenumber, verificationCode, smsInterval, smsActivation, pushInterval, pushActivation, points)' +
+    'VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber])
       .then(function () {
         res.status(200)
         .json({
