@@ -122,7 +122,7 @@ function accountVerification(req, res, next) {
     return t.one('select * from Registration where userId = $1', accountVerificationId)
     .then(user => {
       // if (user.verificationcode == accountVerificationCode) {
-        return t.one('INSERT INTO "User" VALUES(DEFAULT, $1, $2, $3, $4, $5, 0, 60, true, 60, true, 0)', [user.firstname, user.lastname, user.email, user.password, user.mobilenumber]);
+        return t.one('INSERT INTO "User" VALUES(DEFAULT, $1, $2, $3, $4, $5, 0, 60, true, 60, true, 0)', [user.firstName, user.lastName, user.email, user.password, user.mobileNumber]);
           // return t.one('select * from Registration where userId = $1', user.userid);
       // }
       // else{
