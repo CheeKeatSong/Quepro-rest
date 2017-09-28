@@ -111,11 +111,18 @@ function accountVerification(req, res, next) {
   var accountVerificationId = req.body.id;
   var accountVerificationCode = req.body.verificationcode;
 
+   // return db.task(t => {
+   //          return t.oneOrNone('SELECT id FROM Users WHERE name = $1', name, u => u && u.id)
+   //              .then(userId => {
+   //                  return userId || t.one('INSERT INTO Users(name) VALUES($1) RETURNING id', name, u => u.id);
+   //              });
+   //      });
+
   db.task('verify-register-user', t => {
     return t.one('select * from Registration where userId = $1', accountVerificationId)
     .then(user => {
       // if (user.verificationcode == accountVerificationCode) {
-        t.none('INSERT INTO User(userid, firstname, lastname, email, password, mobilenumber, verificationCode, smsInterval, smsActivation, pushInterval, pushActivation, points) VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, )', [user.firstname, user.lastname, user.email, user.password, user.mobilenumber]);
+        return user || t.one('INSERT INTO User(userid, firstname, lastname, email, password, mobilenumber, verificationCode, smsInterval, smsActivation, pushInterval, pushActivation, points) VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, )', [user.firstname, user.lastname, user.email, user.password, user.mobilenumber]);
           // return t.one('select * from Registration where userId = $1', user.userid);
       // }
       // else{
