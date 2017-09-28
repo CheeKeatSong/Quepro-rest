@@ -123,7 +123,7 @@ function accountVerification(req, res, next) {
     res.status(200)
     .json({
       status: 'success',
-      message: 'Account Verified' + arr[0].verificationcode + ' ' + accountVerificationCode;
+      message: 'Account Verified' + arr[0].verificationcode + ' ' + accountVerificationCode
     });
   })
   .catch(function (err) {
