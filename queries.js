@@ -110,34 +110,29 @@ function accountVerification(req, res, next) {
 
   var accountVerificationId = req.body.id;
   var accountVerificationCode = req.body.verificationcode;
-  var check = "";
 
   db.any('select * from Registration where userId = $1', accountVerificationId)
   .then(function (DBdata) {
 
     var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
 
-    if (arr[0].verificationcode == accountVerificationCode){
-
-      check = "1";
+    // if (arr[0].verificationcode == accountVerificationCode){
 
       db.one('INSERT INTO User(userid, firstname, lastname, email, password, mobilenumber, verificationCode, smsInterval, smsActivation, pushInterval, pushActivation, points)' +
-        'VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber])
-      .then(function () {
+        'VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber]);
+    //   .then(function () {
 
-        check = "2";
+    //     res.status(200)
+    //     .json({
+    //       status: 'success',
+    //       message: 'Account Verified' + arr[0].verificationcode + ' ' + accountVerificationCode + ' ' + check
+    //     });
+    //   })
+    //   .catch(function (err) {
+    //     return next(err);
+    //   });
 
-        res.status(200)
-        .json({
-          status: 'success',
-          message: 'Account Verified' + arr[0].verificationcode + ' ' + accountVerificationCode + ' ' + check
-        });
-      })
-      .catch(function (err) {
-        return next(err);
-      });
-
-    }
+    // }
 
     // res.status(200)
     // .json({
