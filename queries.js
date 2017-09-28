@@ -111,7 +111,7 @@ function accountVerification(req, res, next) {
   var accountVerificationId = req.body.id;
   var accountVerificationCode = req.body.verificationcode;
 
-  DBdata = db.any('select * from Registration where userId = $1', accountVerificationId)
+  DBdata = db.one('select * from Registration where userId = $1', accountVerificationId);
   // .then(function (DBdata) {
 
     var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
@@ -129,7 +129,7 @@ function accountVerification(req, res, next) {
         });
       })
       .catch(function (err) {
-        return next(err);
+        return next(err + DBdata);
       });
 
     }
