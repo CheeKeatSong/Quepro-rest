@@ -116,15 +116,26 @@ function accountVerification(req, res, next) {
 
     var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
 
-    // if (arr[0].verificationcode == accountVerificationCode){
-      db.one('INSERT INTO User VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber]);
-    // }
+    if (arr[0].verificationcode == accountVerificationCode){
+      db.one('INSERT INTO User VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber])
+      .then(function () {
 
-    res.status(200)
-    .json({
-      status: 'success',
-      message: 'Account Verified' + arr[0].verificationcode + ' ' + accountVerificationCode
-    });
+        res.status(200)
+        .json({
+          status: 'success',
+          message: 'Account Verified' + arr[0].verificationcode + ' ' + accountVerificationCode
+        });
+      })
+      .catch(function (err) {
+        return next(err);
+      });
+    }
+    
+    // res.status(200)
+    // .json({
+    //   status: 'success',
+    //   message: 'Account Verified' + arr[0].verificationcode + ' ' + accountVerificationCode
+    // });
   })
   .catch(function (err) {
     return next(err);
