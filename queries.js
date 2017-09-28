@@ -113,9 +113,9 @@ function accountVerification(req, res, next) {
   var arr;
 
   db.any('select * from Registration where userId = $1', accountVerificationId)
-  .then(function (DBdata) => {
+  .then(function (DBdata) {
     arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
-  }).catch(error => {
+  }).catch(function (err) {
      return next(err);
   });
 
@@ -136,18 +136,7 @@ function accountVerification(req, res, next) {
   }else{
     return ("Verification code does not match!");
   }
-
-    // res.status(200)
-    // .json({
-    //   status: 'success',
-    //   message: 'Account Verified' + arr[0].verificationcode + ' ' + accountVerificationCode
-    // });
 }
-
-// Insert registration record to user db
-// function accountVerification(arr) {
-//   db.one('INSERT INTO User VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber]);
-// }
 
 function resendSMSCode(req, res, next) {
 
