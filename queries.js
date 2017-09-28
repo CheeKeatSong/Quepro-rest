@@ -112,12 +112,12 @@ function accountVerification(req, res, next) {
   var accountVerificationCode = req.body.verificationCode;
 
   db.any('select * from Registration where userId = $1', accountVerificationId)
-  .then(function (data) {
+  .then(function (DBdata) {
 
-    var arr = Object.keys(data).map(function(k) { return data[k] });
+    var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
 
     if (arr[0].verificationcode == accountVerificationCode){
-        db.one('INSERT INTO User VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber]);
+      db.one('INSERT INTO User VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber]);
     }
 
     res.status(200)
@@ -133,7 +133,7 @@ function accountVerification(req, res, next) {
 
 // Insert registration record to user db
 function accountVerification(arr) {
-  db.one('INSERT INTO User VALUES(DEFAULT, arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber, , 60, true, 60, true, ) RETURNING userId', [firstName, lastName, email, password, mobileNumber, parseInt(codes)]);
+  db.one('INSERT INTO User VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber]);
 }
 
 function resendSMSCode(req, res, next) {
