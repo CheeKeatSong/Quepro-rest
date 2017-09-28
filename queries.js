@@ -118,7 +118,7 @@ function accountVerification(req, res, next) {
             res.status(200)
         .json({
           status: 'success',
-          message: 'Account Verified' + arr
+          message: 'Account Verified' + arr[0].verificationcode
         });
 
     // if (arr[0].verificationcode == accountVerificationCode){
