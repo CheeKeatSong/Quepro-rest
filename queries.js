@@ -15,6 +15,7 @@ module.exports = {
   getAllRegistration: getAllRegistration,
   getSingleRegistration: getSingleRegistration,
   createRegistration: createRegistration,
+  accountVerification: accountVerification,
   // updateRegistration: updateRegistration,
   // removeRegistration: removeRegistration,
   resendEmailCode: resendEmailCode,
@@ -102,6 +103,37 @@ res.status(200)
     return next(err);
   });
 
+}
+
+// Verify account
+function accountVerification(req, res, next) {
+
+  var accountVerificationId = req.body.id;
+  var accountVerificationCode = req.body.verificationCode;
+
+  db.any('select * from Registration where userId = $1', accountVerificationId)
+  .then(function (data) {
+
+    var arr = Object.keys(DBdata).map(function(k) { return data[k] });
+
+    if (arr[0].verificationcode == accountVerificationCode){
+        db.one('INSERT INTO User VALUES(DEFAULT, arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber, , 60, true, 60, true, ) RETURNING userId', [firstName, lastName, email, password, mobileNumber, parseInt(codes)]);
+    }
+    
+    res.status(200)
+    .json({
+      status: 'success',
+      message: 'Account Verified'
+    });
+  })
+  .catch(function (err) {
+    return next(err);
+  });
+}
+
+// Insert registration record to user db
+function accountVerification(arr) {
+  db.one('INSERT INTO User VALUES(DEFAULT, arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber, , 60, true, 60, true, ) RETURNING userId', [firstName, lastName, email, password, mobileNumber, parseInt(codes)]);
 }
 
 function resendSMSCode(req, res, next) {
