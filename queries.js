@@ -114,7 +114,7 @@ function accountVerification(req, res, next) {
   db.any('select * from Registration where userId = $1', accountVerificationId)
   .then(function (data) {
 
-    var arr = Object.keys(DBdata).map(function(k) { return data[k] });
+    var arr = Object.keys(data).map(function(k) { return data[k] });
 
     if (arr[0].verificationcode == accountVerificationCode){
         db.one('INSERT INTO User VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber]);
