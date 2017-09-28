@@ -109,7 +109,7 @@ res.status(200)
 function accountVerification(req, res, next) {
 
   var accountVerificationId = req.body.id;
-  var accountVerificationCode = req.body.verificationCode;
+  var accountVerificationCode = req.body.verificationcode;
 
   db.any('select * from Registration where userId = $1', accountVerificationId)
   .then(function (DBdata) {
