@@ -111,36 +111,49 @@ function accountVerification(req, res, next) {
   var accountVerificationId = req.body.id;
   var accountVerificationCode = req.body.verificationcode;
 
-  db.any('select * from Registration where userId = $1', accountVerificationId)
-  .then(function (DBdata) {
-    var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
+  db.task('verify-register-user', t => {
+    return t.one('select * from Registration where userId = $1', accountVerificationId)
+    .then(user => {
+      if (user.verificationcode == accountVerificationCode) {
+        return t.any('INSERT INTO User(userid, firstname, lastname, email, password, mobilenumber, verificationCode, smsInterval, smsActivation, pushInterval, pushActivation, points)' +
+          'VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, )', [user.firstname, user.lastname, user.email, user.password, user.mobilenumber]);
+      }
+      else{
+        return next("Verification code does not match!");
+      }
+    });
+  })
+  .then(data => {
+    res.status(200)
+    .json({
+      status: 'success',
+      message: 'Account Verified'
+    });
+  })
+  .catch(error => {
+    return next(err);
+  });
 
-            res.status(200)
-        .json({
-          status: 'success',
-          message: 'Account Verified' + arr[0].verificationcode
-        });
+  // db.any('select * from Registration where userId = $1', accountVerificationId)
+  // .then(function (DBdata) {
+  //   var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
+  // }).catch(function (err) {
 
-    // if (arr[0].verificationcode == accountVerificationCode){
-    //   db.none('INSERT INTO User(userid, firstname, lastname, email, password, mobilenumber, verificationCode, smsInterval, smsActivation, pushInterval, pushActivation, points)' +
-    //     'VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber])
-    //   .then(function () {
+  // });
 
-      //   res.status(200)
-      //   .json({
-      //     status: 'success',
-      //     message: 'Account Verified' + arr[0].verificationcode + ' ' + accountVerificationCode + ' ' + check
-      //   });
-      // })
-    //   .catch(function (err) {
-    //     return next(err + '\n' + DBdata);
-    //   });
-    // }else{
-    //   return ("Verification code does not match!");
-    // }
-  }).catch(function (err) {
-   return next(err);
- });
+  // if (arr[0].verificationcode == accountVerificationCode){
+  //   db.none('INSERT INTO User(userid, firstname, lastname, email, password, mobilenumber, verificationCode, smsInterval, smsActivation, pushInterval, pushActivation, points)' +
+  //     'VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber])
+  //   .then(function () {
+
+
+  //   })
+  //   .catch(function (err) {
+  //     return next(err + '\n' + DBdata);
+  //   });
+  // }else{
+  //   return ("Verification code does not match!");
+  // }
 }
 
 function resendSMSCode(req, res, next) {
