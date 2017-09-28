@@ -114,7 +114,6 @@ function accountVerification(req, res, next) {
   db.any('select * from Registration where userId = $1', accountVerificationId)
   .then(function (DBdata) {
 
-
     var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
 
     if (arr[0].verificationcode == accountVerificationCode){
@@ -124,7 +123,7 @@ function accountVerification(req, res, next) {
     res.status(200)
     .json({
       status: 'success',
-      message: 'Account Verified'
+      message: 'Account Verified' + arr[0].verificationcode + ' ' + accountVerificationCode;
     });
   })
   .catch(function (err) {
