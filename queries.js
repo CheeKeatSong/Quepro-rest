@@ -113,9 +113,11 @@ function accountVerification(req, res, next) {
   var arr;
 
   db.any('select * from Registration where userId = $1', accountVerificationId)
-  .then(function (DBdata) {
+  .then(function (DBdata) => {
     arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
-  }
+  }).catch(error => {
+     return next(err);
+  });
 
   if (arr[0].verificationcode == accountVerificationCode){
     db.none('INSERT INTO User(userid, firstname, lastname, email, password, mobilenumber, verificationCode, smsInterval, smsActivation, pushInterval, pushActivation, points)' +
