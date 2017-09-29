@@ -119,11 +119,15 @@ function accountVerification(req, res, next) {
       res.status(200)
       .json({
         status: 'success',
-        data: 'data',
+        data: data,
         message: 'Account Verification Success!'
       });
     }else{
-      return ("Verification Code Does Not Match!");
+      res.status(400)
+      .json({
+        status: 'fail',
+        message: 'Verification Code Does Not Match!'
+      });
     }
   })
   .catch(function (err) {
