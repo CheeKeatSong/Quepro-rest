@@ -151,43 +151,47 @@ function createUserAccount(req, res, next) {
 
 function resendSMSCode(req, res, next) {
 
-  var userId = parseInt(req.params.id);
+  var id = parseInt(req.params.id);
 
-  initializeVerificationCode(userId);
+  db.one('select * from registration WHERE userId=$1', id)
+  .then(function (data) {
 
-  db.any('select * from Registration where userid = $1', userId)
-  .then(function (DBdata) {
+    var registration = Object.keys(data).map(function(k) { return data[k] });
 
-// SMS verification code
-// Twilio Credentials 
-var accountSid = 'ACc6ba408ad0b43567ab05fb4e01405ed9'; 
-var authToken = '95c544416ee5345130c78a828c57e9c3'; 
-//require the Twilio module and create a REST client 
-var client = require('twilio')(accountSid, authToken); 
+    if ( registration[6] == "0" ) {
+      var code = generateVerificationCode();
+      console.log(id + ' ' + code);
+      db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
+      .then(function () {
+        twilioSMSVerificationCode(code);
+      })
+      .catch(function (err) {
+        return next(err);
+        console.log(err);
+      });
+    }else{
+     db.one('select * from registration WHERE userId=$1', id)
+     .then(function (data) {
+       var registration = Object.keys(data).map(function(k) { return data[k] });
+       twilioSMSVerificationCode(registration[6]);
+     }) .catch(function (err) {
+      return next(err);
+      console.log(err);
+    });
+   }
 
-var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
+   removeVerificationCodeAfter60Seconds(id);
 
-client.messages.create({ 
-  to: "+60192691128", 
-  // to: '"' + arr[0].mobilenumber '"', 
-  from: "+15005550006", 
-  body: 'Your QuePro verification code is ' + arr[0].verificationcode
-}, function(err, message) { 
-  console.log(message.sid); 
-});
-
-removeVerificationCodeAfter60Seconds(userId);
-
-res.status(200)
-.json({
-  status: 'success',
-  message: 'Verification code SMS is sent to your phone'
-});
-})
+   res.status(200)
+   .json({
+    status: 'success',
+    message: 'Verification code email is sent to your phone'
+  });
+ })
   .catch(function (err) {
+    console.log(err);
     return next(err);
   });
-
 }
 
 function resendEmailCode(req, res, next) {
@@ -199,10 +203,6 @@ function resendEmailCode(req, res, next) {
 
     var registration = Object.keys(data).map(function(k) { return data[k] });
 
-    console.log(id + ' ' + data);
-    console.log(id + ' ' + registration);
-    console.log(id + ' ' + registration[6]);
-
     if ( registration[6] == "0" ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
@@ -213,8 +213,7 @@ function resendEmailCode(req, res, next) {
       .catch(function (err) {
         return next(err);
         console.log(err);
-    // return next(err);
-  });
+      });
     }else{
      db.one('select * from registration WHERE userId=$1', id)
      .then(function (data) {
@@ -223,8 +222,7 @@ function resendEmailCode(req, res, next) {
      }) .catch(function (err) {
       return next(err);
       console.log(err);
-    // return next(err);
-  });
+    });
    }
 
    removeVerificationCodeAfter60Seconds(id);
@@ -234,18 +232,12 @@ function resendEmailCode(req, res, next) {
     status: 'success',
     message: 'Verification code email is sent to your phone'
   });
-  // console.log('1 ' + data);
-  // var arr = Object.keys(data).map(function(k) { return data[k] });
-  //   console.log('2 ' + arr);
-  // return arr;
-
-})
+ })
   .catch(function (err) {
     console.log(err);
-    // return next(err);
+    return next(err);
   });
 }
-
 
 // // Send mail with registered email - 1
 // var nodemailer = require('nodemailer');
@@ -315,8 +307,22 @@ function mailgunVerificationCode(code) {
   });
 }
 
-function retrieveVerificationCode(id) {
+function twilioSMSVerificationCode(code) {
+// SMS verification code
+// Twilio Credentials 
+var accountSid = 'ACc6ba408ad0b43567ab05fb4e01405ed9'; 
+var authToken = '95c544416ee5345130c78a828c57e9c3'; 
+//require the Twilio module and create a REST client 
+var client = require('twilio')(accountSid, authToken); 
 
+client.messages.create({ 
+  to: "+60192691128", 
+  // to: '"' + arr[0].mobilenumber '"', 
+  from: "+15005550006", 
+  body: 'Your QuePro verification code is ' + code
+}, function(err, message) { 
+  console.log(message.sid); 
+});
 }
 
 function generateVerificationCode() {
