@@ -302,7 +302,7 @@ function initializeVerificationCode(id) {
     // return next(err);
   });
     }
-  },2000);
+  },5000);
 }
 
 function retrieveVerificationCode(id) {
