@@ -283,15 +283,16 @@ function removeVerificationCodeAfter60Seconds(id) {
 function initializeVerificationCode(id) {
 
   var data = retrieveVerificationCode(id);
+  var arr = Object.keys(data).map(function(k) { return data[k] });
 
   setInterval(function(){
 
-  console.log('2 ' + data);
-    if ( data.verificationcode == 0 ) {
+  console.log('2 ' + arr);
+    if ( arr[0].verificationcode == 0 ) {
 
       var code = generateVerificationCode();
 
-      console.log('3 ' + data + ' ' + code);
+      console.log('3 ' + arr + ' ' + code);
 
       db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
       .then(function () {
@@ -302,7 +303,7 @@ function initializeVerificationCode(id) {
     // return next(err);
   });
     }
-  },2000);
+  },1000);
 }
 
 function retrieveVerificationCode(id) {
