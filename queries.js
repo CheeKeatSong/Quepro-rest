@@ -194,12 +194,8 @@ function resendEmailCode(req, res, next) {
 
   var id = parseInt(req.params.id);
 
-
-
-
   db.one('select * from registration WHERE userId=$1', id)
   .then(function (data) {
-
 
     var registration = Object.keys(data).map(function(k) { return data[k] });
 
@@ -215,15 +211,21 @@ function resendEmailCode(req, res, next) {
       .then(function () {
 
   // initializeVerificationCode(userId);
+})
+      .catch(function (err) {
+        return next(err);
+        console.log(err);
+    // return next(err);
+  });
+    }
 
+      // send email with mailgun services - 2
+      var mailgun = require("mailgun-js");
+      var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
+      var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
+      var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
-  // send email with mailgun services - 2
-  var mailgun = require("mailgun-js");
-  var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
-  var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
-  var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
-
-  var data = {
+      var data = {
     // from: '"'QuePro + arr[0].email + '"',
     from: 'QuePro <CKSong@queuepro.com>',
     to: '0116708@kdu-online.com',
@@ -242,13 +244,6 @@ function resendEmailCode(req, res, next) {
     status: 'success',
     message: 'Verification code email is sent to your phone'
   });
-})
-      .catch(function (err) {
-        return next(err);
-        console.log(err);
-    // return next(err);
-  });
-    }
   // console.log('1 ' + data);
   // var arr = Object.keys(data).map(function(k) { return data[k] });
   //   console.log('2 ' + arr);
@@ -259,10 +254,6 @@ function resendEmailCode(req, res, next) {
     console.log(err);
     // return next(err);
   });
-
-
-
-
 }
 
 
