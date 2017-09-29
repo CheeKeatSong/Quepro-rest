@@ -56,7 +56,6 @@ function getSingleRegistration(req, res, next) {
   });
 }
 
-
 function createRegistration(req, res, next) {
 
   var firstName = req.body.firstName;
@@ -65,14 +64,7 @@ function createRegistration(req, res, next) {
   var password = req.body.password;
   var mobileNumber = req.body.mobileNumber;
 
-  // verification code generator
-  var CodeGenerator = require('node-code-generator');
-  var generator = new CodeGenerator();
-  var pattern = '######';
-  var howMany = 1;
-  var options = {};
-  // Generate an array of random unique codes according to the provided pattern: 
-  var codes = generator.generateCodes(pattern, howMany, options);
+  var codes = generateVerificationCode();
 
   db.one('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
     'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING userId', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
@@ -126,70 +118,13 @@ function accountVerification(req, res, next) {
       res.status(400)
       .json({
         status: 'fail',
-        message: 'Verification Code Does Not Match!' + accountVerificationId + ' ' + accountVerificationCode + ' ' + data.verificationcode
+        message: 'Verification Code Does Not Match Or Expired!' + accountVerificationId + ' ' + accountVerificationCode + ' ' + data.verificationcode
       });
     }
   })
   .catch(function (err) {
     return next(err);
   });
-
-
-  // var accountVerificationId = req.body.id;
-  // var accountVerificationCode = req.body.verificationcode;
-
-  //  // return db.task(t => {
-  //  //          return t.oneOrNone('SELECT id FROM Users WHERE name = $1', name, u => u && u.id)
-  //  //              .then(userId => {
-  //  //                  return userId || t.one('INSERT INTO Users(name) VALUES($1) RETURNING id', name, u => u.id);
-  //  //              });
-  //  //      });
-
-  //  db.task('verify-register-user', t => {
-  //   return t.oneOrNone('select * from Registration where userId = $1', accountVerificationId)
-  //   .then(user => {
-  //     // if (user.verificationcode == accountVerificationCode) {
-  //       // return t.one('INSERT INTO users VALUES(DEFAULT, $1, $2, $3, $4, $5, 0, 60, true, 60, true, 0)', [user.firstName, user.lastName, user.email, user.password, user.mobileNumber]);
-  //       return user || t.one('INSERT INTO users VALUES(DEFAULT, 1, 1, 1, 1, 1, 0, 60, true, 60, true, 0)');
-  //          // return t.one('select * from Registration where userId = $1', user.userid);
-  //     // }
-  //     // else{
-  //     //   return next("Verification code does not match!");
-  //     // }
-  //   });
-  // })
-  //  .then(data => {
-  //   res.status(200)
-  //   .json({
-  //     status: 'success',
-  //     data: data,
-  //     message: 'Account Verified'
-  //   });
-  // })
-  //  .catch(error => {
-  //   return next(err);
-  // });
-
-  // // db.any('select * from Registration where userId = $1', accountVerificationId)
-  // // .then(function (DBdata) {
-  // //   var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
-  // // }).catch(function (err) {
-
-  // // });
-
-  // // if (arr[0].verificationcode == accountVerificationCode){
-  // //   db.none('INSERT INTO User(userid, firstname, lastname, email, password, mobilenumber, verificationCode, smsInterval, smsActivation, pushInterval, pushActivation, points)' +
-  // //     'VALUES(DEFAULT, $1, $2, $3, $4, $5, 60, true, 60, true, ) RETURNING userId', [arr[0].firstname, arr[0].lastname, arr[0].email, arr[0].password, arr[0].mobilenumber])
-  // //   .then(function () {
-
-
-  // //   })
-  // //   .catch(function (err) {
-  // //     return next(err + '\n' + DBdata);
-  // //   });
-  // // }else{
-  // //   return ("Verification code does not match!");
-  // // }
 }
 
 function createUserAccount(req, res, next) {
@@ -198,7 +133,7 @@ function createUserAccount(req, res, next) {
   var lastName = req.body.lastname;
   var email = req.body.email;
   var password = req.body.password;
-  var mobileNumber = req.body.mobileNumber;
+  var mobileNumber = req.body.mobilenumber;
   var verificationCode = req.body.verificationcode;
 
   db.none('INSERT INTO users VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, 60, true, 60, true, 0)', [firstName, lastName, email, password, mobileNumber, verificationCode])
@@ -217,6 +152,8 @@ function createUserAccount(req, res, next) {
 function resendSMSCode(req, res, next) {
 
   var userId = parseInt(req.params.id);
+
+  initializeVerificationCode(userId);
 
   db.any('select * from Registration where userid = $1', userId)
   .then(function (DBdata) {
@@ -239,6 +176,8 @@ client.messages.create({
   console.log(message.sid); 
 });
 
+removeVerificationCodeAfter60Seconds(userId);
+
 res.status(200)
 .json({
   status: 'success',
@@ -254,6 +193,8 @@ res.status(200)
 function resendEmailCode(req, res, next) {
 
   var userId = parseInt(req.params.id);
+
+  initializeVerificationCode(userId);
 
   db.any('select * from Registration where userid = $1', userId)
   .then(function (DBdata) {
@@ -277,6 +218,8 @@ function resendEmailCode(req, res, next) {
   mailgun.messages().send(data, function (error, body) {
     console.log(body);
   });
+
+  removeVerificationCodeAfter60Seconds(userId);
 
   res.status(200)
   .json({
@@ -325,5 +268,48 @@ function resendEmailCode(req, res, next) {
 //       }
 //     });
 
+function removeVerificationCodeAfter60Seconds(id) {
+  setInterval(function(){
+    db.none('update registration set verificationCode="" WHERE userId=$1', id)
+    .then(function () {
+    })
+    .catch(function (err) {
+      console.log(err);
+    // return next(err);
+  });
+  },60000);
+}
 
+function initializeVerificationCode(id) {
 
+  db.none('select registration WHERE userId=$1', id)
+  .then(function (data) {
+    if ( data.verificationcode == null ) {
+      var code = generateVerificationCode();
+
+      db.none('update registration set verificationCode=$1 WHERE userId=$2', [code,id])
+      .then(function () {
+      })
+      .catch(function (err) {
+        console.log(err);
+    // return next(err);
+  });
+    }
+  })
+  .catch(function (err) {
+    console.log(err);
+    // return next(err);
+  });
+}
+
+function generateVerificationCode() {
+  // verification code generator
+  var CodeGenerator = require('node-code-generator');
+  var generator = new CodeGenerator();
+  var pattern = '######';
+  var howMany = 1;
+  var options = {};
+  // Generate an array of random unique codes according to the provided pattern: 
+  var codes = generator.generateCodes(pattern, howMany, options);
+  return parseInt(codes);
+}
