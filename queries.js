@@ -295,9 +295,7 @@ function initializeVerificationCode(id) {
   if ( registration[6] < 1 ) {
 
     var code = generateVerificationCode();
-
-    console.log('3 ' + arr + ' ' + code);
-
+ console.log(id + ' ' + code);
     db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
     .then(function () {
 
