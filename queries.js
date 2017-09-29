@@ -202,15 +202,14 @@ function resendEmailCode(req, res, next) {
     console.log(id + ' ' + data);
     console.log(id + ' ' + registration);
     console.log(id + ' ' + registration[6]);
-    if ( registration[6] == "0" ) {
 
+    if ( registration[6] == "0" ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
       db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
       .then(function () {
-
-  // initializeVerificationCode(userId);
-})
+        mailgunVerificationCode(code);
+      })
       .catch(function (err) {
         return next(err);
         console.log(err);
@@ -219,7 +218,8 @@ function resendEmailCode(req, res, next) {
     }else{
      db.one('select * from registration WHERE userId=$1', id)
      .then(function (data) {
-
+       var registration = Object.keys(data).map(function(k) { return data[k] });
+       mailgunVerificationCode(registration[6]);
      }) .catch(function (err) {
       return next(err);
       console.log(err);
@@ -227,12 +227,10 @@ function resendEmailCode(req, res, next) {
   });
    }
 
+   removeVerificationCodeAfter60Seconds(id);
 
-
-  removeVerificationCodeAfter60Seconds(id);
-
-  res.status(200)
-  .json({
+   res.status(200)
+   .json({
     status: 'success',
     message: 'Verification code email is sent to your phone'
   });
@@ -296,7 +294,7 @@ function removeVerificationCodeAfter60Seconds(id) {
   },60000);
 }
 
-function mailgunVerificationCode(id) {
+function mailgunVerificationCode(code) {
 
       // send email with mailgun services - 2
       var mailgun = require("mailgun-js");
