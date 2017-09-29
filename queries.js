@@ -201,7 +201,7 @@ function createUserAccount(req, res, next) {
   var mobileNumber = req.body.mobileNumber;
   var verificationCode = req.body.verificationcode;
 
-  db.one('INSERT INTO users VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, 60, true, 60, true, 0)', [firstName, lastName, email, password, mobileNumber, verificationCode])
+  db.none('INSERT INTO users VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, 60, true, 60, true, 0)', [firstName, lastName, email, password, mobileNumber, verificationCode])
   .then(function () {
     res.status(200)
     .json({
