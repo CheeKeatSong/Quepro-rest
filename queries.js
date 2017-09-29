@@ -270,7 +270,7 @@ function resendEmailCode(req, res, next) {
 
 function removeVerificationCodeAfter60Seconds(id) {
   setInterval(function(){
-    db.none('update registration set verificationCode="" WHERE userId=$1', id)
+    db.none('update registration set verificationcode="" WHERE userId=$1', id)
     .then(function () {
     })
     .catch(function (err) {
@@ -287,7 +287,7 @@ function initializeVerificationCode(id) {
     if ( data.verificationcode == null ) {
       var code = generateVerificationCode();
 
-      db.none('update registration set verificationCode=$1 WHERE userId=$2', [code,id])
+      db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
       .then(function () {
       })
       .catch(function (err) {
