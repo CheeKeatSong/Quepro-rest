@@ -134,9 +134,8 @@ function createUserAccount(req, res, next) {
   var email = req.body.email;
   var password = req.body.password;
   var mobileNumber = req.body.mobilenumber;
-  var verificationCode = req.body.verificationcode;
 
-  db.none('INSERT INTO users VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, 60, true, 60, true, 0)', [firstName, lastName, email, password, mobileNumber, verificationCode])
+  db.none('INSERT INTO users VALUES(DEFAULT, $1, $2, $3, $4, $5, 0, 60, true, 60, true, 0)', [firstName, lastName, email, password, mobileNumber, verificationCode])
   .then(function () {
     res.status(200)
     .json({
