@@ -307,7 +307,7 @@ function retrieveVerificationCode(id) {
  .then(function (data) {
 
   var arr = Object.keys(data).map(function(k) { return data[k] });
-      // if ( arr[0].verificationcode == 0 ) {
+      if ( arr[0].verificationcode < 1 ) {
 
       var code = generateVerificationCode();
 
@@ -321,7 +321,7 @@ function retrieveVerificationCode(id) {
         console.log(err);
     // return next(err);
   });
-    // }
+    }
   // console.log('1 ' + data);
   // var arr = Object.keys(data).map(function(k) { return data[k] });
   //   console.log('2 ' + arr);
