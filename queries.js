@@ -286,7 +286,7 @@ function initializeVerificationCode(id) {
  .then(function (data) {
 
   var arr = Object.keys(data).map(function(k) { return data[k] });
-  console.log(arr[0].verificationcode);
+  console.log(id + ' ' + arr[0].verificationcode);
   if ( arr[0].verificationcode < 1 ) {
 
     var code = generateVerificationCode();
