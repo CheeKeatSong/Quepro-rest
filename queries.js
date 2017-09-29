@@ -288,6 +288,8 @@ function initializeVerificationCode(id) {
 
     var code = generateVerificationCode();
 
+    console.log('2 ' + data + ' ' + code);
+
     db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
     .then(function () {
 
@@ -302,6 +304,7 @@ function initializeVerificationCode(id) {
 function retrieveVerificationCode(id) {
  db.one('select * from registration WHERE userId=$1', id)
  .then(function (data) {
+  console.log('1 ' + data);
   return data;
 })
  .catch(function (err) {
