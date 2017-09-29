@@ -207,7 +207,7 @@ function resendEmailCode(req, res, next) {
 
     console.log(id + ' ' + registration);
     console.log(id + ' ' + registration[6]);
-    if ( registration[6] < 1 ) {
+    if ( registration[6] == "0" ) {
 
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
