@@ -291,7 +291,7 @@ function initializeVerificationCode(id) {
   console.log(id + ' ' + data);
 
   console.log(id + ' ' + registration);
-  console.log(id + ' ' + registration.verificationcode);
+  console.log(id + ' ' + registration[7]);
   if ( registration.verificationcode < 1 ) {
 
     var code = generateVerificationCode();
