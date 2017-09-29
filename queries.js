@@ -270,7 +270,7 @@ function resendEmailCode(req, res, next) {
 
 function removeVerificationCodeAfter60Seconds(id) {
   setInterval(function(){
-    db.none('update registration set verificationcode="" WHERE userId=$1', id)
+    db.none('update registration set verificationcode=0 WHERE userId=$1', id)
     .then(function () {
     })
     .catch(function (err) {
