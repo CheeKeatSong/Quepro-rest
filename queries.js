@@ -115,6 +115,10 @@ function accountVerification(req, res, next) {
   db.one('select * from Registration where userId = $1', accountVerificationId)
   .then(function (data) {
 
+    console.log(accountVerificationId);
+    console.log(accountVerificationCode);
+    console.log(data.verificationcode);
+
     if(data.verificationcode == accountVerificationCode) {
       res.status(200)
       .json({
