@@ -300,7 +300,7 @@ function initializeVerificationCode(id) {
 }
 
 function retrieveVerificationCode(id) {
- db.none('select registration WHERE userId=$1', id)
+ db.one('select * from registration WHERE userId=$1', id)
  .then(function (data) {
   return data;
 })
