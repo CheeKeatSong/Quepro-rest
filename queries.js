@@ -284,11 +284,12 @@ function initializeVerificationCode(id) {
 
   var data = retrieveVerificationCode(id);
 
+console.log('2 ' + data);
   if ( data.verificationcode == 0 ) {
 
     var code = generateVerificationCode();
 
-    console.log('2 ' + data + ' ' + code);
+    console.log('3 ' + data + ' ' + code);
 
     db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
     .then(function () {
