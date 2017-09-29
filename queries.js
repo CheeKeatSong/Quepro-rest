@@ -282,11 +282,11 @@ function removeVerificationCodeAfter60Seconds(id) {
 
 function initializeVerificationCode(id) {
 
-  var data = retrieveVerificationCode();
+  var data = retrieveVerificationCode(id);
 
   if ( data.verificationcode == 0 ) {
 
-    var code = generateVerificationCode(id);
+    var code = generateVerificationCode();
 
     db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
     .then(function () {
