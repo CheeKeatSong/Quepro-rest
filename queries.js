@@ -286,13 +286,13 @@ function initializeVerificationCode(id) {
  .then(function (data) {
 
 
-  var arr = Object.keys(data).map(function(k) { return data[k] });
+  var registration = Object.keys(data).map(function(k) { return data[k] });
 
   console.log(id + ' ' + data);
 
-  console.log(id + ' ' + arr);
-  console.log(id + ' ' + arr[0].verificationcode);
-  if ( arr[0].verificationcode < 1 ) {
+  console.log(id + ' ' + registration);
+  console.log(id + ' ' + registration.verificationcode);
+  if ( registration.verificationcode < 1 ) {
 
     var code = generateVerificationCode();
 
