@@ -200,7 +200,6 @@ function resendEmailCode(req, res, next) {
     var registration = Object.keys(data).map(function(k) { return data[k] });
 
     console.log(id + ' ' + data);
-
     console.log(id + ' ' + registration);
     console.log(id + ' ' + registration[6]);
     if ( registration[6] == "0" ) {
@@ -217,25 +216,18 @@ function resendEmailCode(req, res, next) {
         console.log(err);
     // return next(err);
   });
-    }
+    }else{
+     db.one('select * from registration WHERE userId=$1', id)
+     .then(function (data) {
 
-      // send email with mailgun services - 2
-      var mailgun = require("mailgun-js");
-      var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
-      var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
-      var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
-
-      var data = {
-    // from: '"'QuePro + arr[0].email + '"',
-    from: 'QuePro <CKSong@queuepro.com>',
-    to: '0116708@kdu-online.com',
-    subject: 'Verify Your Account',
-    text: 'Your QuePro verification code is ' + code
-  };
-
-  mailgun.messages().send(data, function (error, body) {
-    console.log(body);
+     }) .catch(function (err) {
+      return next(err);
+      console.log(err);
+    // return next(err);
   });
+   }
+
+
 
   removeVerificationCodeAfter60Seconds(id);
 
@@ -304,27 +296,25 @@ function removeVerificationCodeAfter60Seconds(id) {
   },60000);
 }
 
-function initializeVerificationCode(id) {
+function mailgunVerificationCode(id) {
 
+      // send email with mailgun services - 2
+      var mailgun = require("mailgun-js");
+      var api_key = 'key-f05bf83bbab5abdaf494b79f996fd7c3';
+      var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
+      var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
- // var data = retrieveVerificationCode(id);
+      var data = {
+    // from: '"'QuePro + arr[0].email + '"',
+    from: 'QuePro <CKSong@queuepro.com>',
+    to: '0116708@kdu-online.com',
+    subject: 'Verify Your Account',
+    text: 'Your QuePro verification code is ' + code
+  };
 
- //  //     if ( data[0].verificationcode == 0 ) {
-
- //  //     var code = generateVerificationCode();
-
- //  //     console.log('3 ' + arr + ' ' + code);
-
- //  //     db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
- //  //     .then(function () {
-
- //  //     })
- //  //     .catch(function (err) {
- //  //       console.log(err);
- //  //   // return next(err);
- //  // });
- //  //   }
-
+  mailgun.messages().send(data, function (error, body) {
+    console.log(body);
+  });
 }
 
 function retrieveVerificationCode(id) {
