@@ -284,8 +284,9 @@ function initializeVerificationCode(id) {
 
   var data = retrieveVerificationCode(id);
 
-  console.log('2 ' + data);
   setInterval(function(){
+    
+  console.log('2 ' + data);
     if ( data.verificationcode == 0 ) {
 
       var code = generateVerificationCode();
@@ -301,7 +302,7 @@ function initializeVerificationCode(id) {
     // return next(err);
   });
     }
-  },60000);
+  },1000);
 }
 
 function retrieveVerificationCode(id) {
