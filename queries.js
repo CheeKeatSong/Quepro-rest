@@ -16,6 +16,7 @@ module.exports = {
   getSingleRegistration: getSingleRegistration,
   createRegistration: createRegistration,
   accountVerification: accountVerification,
+  createUserAccount: createUserAccount,
   // updateRegistration: updateRegistration,
   // removeRegistration: removeRegistration,
   resendEmailCode: resendEmailCode,
@@ -118,13 +119,13 @@ function accountVerification(req, res, next) {
       res.status(200)
       .json({
         status: 'success',
-        data: data,
+        data: 'data',
         message: 'Account Verification Success!'
       });
     }else{
-     return next("Verification Code Does Not Match!");
-   }
- })
+      return ("Verification Code Does Not Match!");
+    }
+  })
   .catch(function (err) {
     return next(err);
   });
@@ -185,6 +186,28 @@ function accountVerification(req, res, next) {
   // // }else{
   // //   return ("Verification code does not match!");
   // // }
+}
+
+function createUserAccount(req, res, next) {
+
+  var firstName = req.body.firstname;
+  var lastName = req.body.lastname;
+  var email = req.body.email;
+  var password = req.body.password;
+  var mobileNumber = req.body.mobileNumber;
+  var verificationCode = req.body.verificationcode;
+
+  db.one('INSERT INTO users VALUES(DEFAULT, $1, $2, $3, $4, $5, $6, 60, true, 60, true, 0)', [firstName, lastName, email, password, mobileNumber, verificationCode])
+  .then(function () {
+    res.status(200)
+    .json({
+      status: 'success',
+      message: 'User account is created!'
+    });
+  })
+  .catch(function (err) {
+    return next(err);
+  });
 }
 
 function resendSMSCode(req, res, next) {
