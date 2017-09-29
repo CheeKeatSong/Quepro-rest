@@ -283,10 +283,10 @@ function removeVerificationCodeAfter60Seconds(id) {
 function initializeVerificationCode(id) {
 
   var data = retrieveVerificationCode(id);
-  var arr = Object.keys(data).map(function(k) { return data[k] });
 
   setInterval(function(){
 
+  var arr = Object.keys(data).map(function(k) { return data[k] });
   console.log('2 ' + arr);
     if ( arr[0].verificationcode == 0 ) {
 
@@ -303,7 +303,7 @@ function initializeVerificationCode(id) {
     // return next(err);
   });
     }
-  },1000);
+  },2000);
 }
 
 function retrieveVerificationCode(id) {
