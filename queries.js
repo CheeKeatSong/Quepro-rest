@@ -285,7 +285,12 @@ function initializeVerificationCode(id) {
  db.one('select * from registration WHERE userId=$1', id)
  .then(function (data) {
 
+
   var arr = Object.keys(data).map(function(k) { return data[k] });
+
+  console.log(id + ' ' + data);
+
+  console.log(id + ' ' + arr);
   console.log(id + ' ' + arr[0].verificationcode);
   if ( arr[0].verificationcode < 1 ) {
 
