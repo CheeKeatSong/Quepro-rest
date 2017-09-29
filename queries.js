@@ -286,9 +286,8 @@ function initializeVerificationCode(id) {
 
   setInterval(function(){
 
-  var arr = Object.keys(data).map(function(k) { return data[k] });
-  console.log('2 ' + arr);
-    if ( arr[0].verificationcode == 0 ) {
+  console.log('2 ' + data);
+    if ( data[0].verificationcode == 0 ) {
 
       var code = generateVerificationCode();
 
@@ -310,7 +309,10 @@ function retrieveVerificationCode(id) {
  db.one('select * from registration WHERE userId=$1', id)
  .then(function (data) {
   console.log('1 ' + data);
-  return data;
+  var arr = Object.keys(data).map(function(k) { return data[k] });
+    console.log('2 ' + arr);
+  return arr;
+
 })
  .catch(function (err) {
   console.log(err);
