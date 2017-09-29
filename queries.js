@@ -282,46 +282,26 @@ function removeVerificationCodeAfter60Seconds(id) {
 
 function initializeVerificationCode(id) {
 
-  var data = retrieveVerificationCode(id);
-
-  //     if ( data[0].verificationcode == 0 ) {
-
-  //     var code = generateVerificationCode();
-
-  //     console.log('3 ' + arr + ' ' + code);
-
-  //     db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
-  //     .then(function () {
-
-  //     })
-  //     .catch(function (err) {
-  //       console.log(err);
-  //   // return next(err);
-  // });
-  //   }
-
-}
-
-function retrieveVerificationCode(id) {
  db.one('select * from registration WHERE userId=$1', id)
  .then(function (data) {
 
   var arr = Object.keys(data).map(function(k) { return data[k] });
-      if ( arr[0].verificationcode < 1 ) {
+  console.log(arr[0].verificationcode);
+  if ( arr[0].verificationcode < 1 ) {
 
-      var code = generateVerificationCode();
+    var code = generateVerificationCode();
 
-      console.log('3 ' + arr + ' ' + code);
+    console.log('3 ' + arr + ' ' + code);
 
-      db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
-      .then(function () {
+    db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
+    .then(function () {
 
-      })
-      .catch(function (err) {
-        console.log(err);
+    })
+    .catch(function (err) {
+      console.log(err);
     // return next(err);
   });
-    }
+  }
   // console.log('1 ' + data);
   // var arr = Object.keys(data).map(function(k) { return data[k] });
   //   console.log('2 ' + arr);
@@ -332,6 +312,29 @@ function retrieveVerificationCode(id) {
   console.log(err);
     // return next(err);
   });
+
+ // var data = retrieveVerificationCode(id);
+
+ //  //     if ( data[0].verificationcode == 0 ) {
+
+ //  //     var code = generateVerificationCode();
+
+ //  //     console.log('3 ' + arr + ' ' + code);
+
+ //  //     db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
+ //  //     .then(function () {
+
+ //  //     })
+ //  //     .catch(function (err) {
+ //  //       console.log(err);
+ //  //   // return next(err);
+ //  // });
+ //  //   }
+
+}
+
+function retrieveVerificationCode(id) {
+
 }
 
 function generateVerificationCode() {
