@@ -216,8 +216,6 @@ function resendEmailCode(req, res, next) {
 
   // initializeVerificationCode(userId);
 
-  db.any('select * from Registration where userid = $1', id)
-  .then(function (DBdata) {
 
   // send email with mailgun services - 2
   var mailgun = require("mailgun-js");
@@ -225,14 +223,12 @@ function resendEmailCode(req, res, next) {
   var DOMAIN = 'sandbox0cff8999c890489eb0fe3704c00da3f5.mailgun.org';
   var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 
-  var arr = Object.keys(DBdata).map(function(k) { return DBdata[k] });
-
   var data = {
     // from: '"'QuePro + arr[0].email + '"',
     from: 'QuePro <CKSong@queuepro.com>',
     to: '0116708@kdu-online.com',
     subject: 'Verify Your Account',
-    text: 'Your QuePro verification code is ' + arr[0].verificationcode
+    text: 'Your QuePro verification code is ' + code
   };
 
   mailgun.messages().send(data, function (error, body) {
@@ -247,11 +243,8 @@ function resendEmailCode(req, res, next) {
     message: 'Verification code email is sent to your phone'
   });
 })
-  .catch(function (err) {
-    return next(err);
-  });
-})
       .catch(function (err) {
+        return next(err);
         console.log(err);
     // return next(err);
   });
