@@ -192,9 +192,29 @@ res.status(200)
 
 function resendEmailCode(req, res, next) {
 
-  var userId = parseInt(req.params.id);
+  var id = parseInt(req.params.id);
 
-  initializeVerificationCode(userId);
+
+
+
+  db.one('select * from registration WHERE userId=$1', id)
+  .then(function (data) {
+
+
+    var registration = Object.keys(data).map(function(k) { return data[k] });
+
+    console.log(id + ' ' + data);
+
+    console.log(id + ' ' + registration);
+    console.log(id + ' ' + registration[6]);
+    if ( registration[6] < 1 ) {
+
+      var code = generateVerificationCode();
+      console.log(id + ' ' + code);
+      db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
+      .then(function () {
+
+  // initializeVerificationCode(userId);
 
   db.any('select * from Registration where userid = $1', userId)
   .then(function (DBdata) {
@@ -230,6 +250,26 @@ function resendEmailCode(req, res, next) {
   .catch(function (err) {
     return next(err);
   });
+})
+      .catch(function (err) {
+        console.log(err);
+    // return next(err);
+  });
+    }
+  // console.log('1 ' + data);
+  // var arr = Object.keys(data).map(function(k) { return data[k] });
+  //   console.log('2 ' + arr);
+  // return arr;
+
+})
+  .catch(function (err) {
+    console.log(err);
+    // return next(err);
+  });
+
+
+
+
 }
 
 
@@ -282,39 +322,6 @@ function removeVerificationCodeAfter60Seconds(id) {
 
 function initializeVerificationCode(id) {
 
- db.one('select * from registration WHERE userId=$1', id)
- .then(function (data) {
-
-
-  var registration = Object.keys(data).map(function(k) { return data[k] });
-
-  console.log(id + ' ' + data);
-
-  console.log(id + ' ' + registration);
-  console.log(id + ' ' + registration[6]);
-  if ( registration[6] < 1 ) {
-
-    var code = generateVerificationCode();
- console.log(id + ' ' + code);
-    db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
-    .then(function () {
-
-    })
-    .catch(function (err) {
-      console.log(err);
-    // return next(err);
-  });
-  }
-  // console.log('1 ' + data);
-  // var arr = Object.keys(data).map(function(k) { return data[k] });
-  //   console.log('2 ' + arr);
-  // return arr;
-
-})
- .catch(function (err) {
-  console.log(err);
-    // return next(err);
-  });
 
  // var data = retrieveVerificationCode(id);
 
