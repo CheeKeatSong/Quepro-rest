@@ -216,7 +216,7 @@ function resendEmailCode(req, res, next) {
 
   // initializeVerificationCode(userId);
 
-  db.any('select * from Registration where userid = $1', userId)
+  db.any('select * from Registration where userid = $1', id)
   .then(function (DBdata) {
 
   // send email with mailgun services - 2
@@ -239,7 +239,7 @@ function resendEmailCode(req, res, next) {
     console.log(body);
   });
 
-  removeVerificationCodeAfter60Seconds(userId);
+  removeVerificationCodeAfter60Seconds(id);
 
   res.status(200)
   .json({
