@@ -282,22 +282,30 @@ function removeVerificationCodeAfter60Seconds(id) {
 
 function initializeVerificationCode(id) {
 
-  db.none('select registration WHERE userId=$1', id)
-  .then(function (data) {
-    if ( data.verificationcode == 0 ) {
-      var code = generateVerificationCode();
+  var data = retrieveVerificationCode();
 
-      db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
-      .then(function () {
-      })
-      .catch(function (err) {
-        console.log(err);
+  if ( data.verificationcode == 0 ) {
+
+    var code = generateVerificationCode();
+
+    db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
+    .then(function () {
+
+    })
+    .catch(function (err) {
+      console.log(err);
     // return next(err);
   });
-    }
-  })
-  .catch(function (err) {
-    console.log(err);
+  }
+}
+
+function retrieveVerificationCode(id) {
+ db.none('select registration WHERE userId=$1', id)
+ .then(function (data) {
+  return data;
+})
+ .catch(function (err) {
+  console.log(err);
     // return next(err);
   });
 }
