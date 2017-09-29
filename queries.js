@@ -284,22 +284,24 @@ function initializeVerificationCode(id) {
 
   var data = retrieveVerificationCode(id);
 
-console.log('2 ' + data);
-  if ( data.verificationcode == 0 ) {
+  console.log('2 ' + data);
+  setInterval(function(){
+    if ( data.verificationcode == 0 ) {
 
-    var code = generateVerificationCode();
+      var code = generateVerificationCode();
 
-    console.log('3 ' + data + ' ' + code);
+      console.log('3 ' + data + ' ' + code);
 
-    db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
-    .then(function () {
+      db.none('update registration set verificationcode=$1 WHERE userId=$2', [code,id])
+      .then(function () {
 
-    })
-    .catch(function (err) {
-      console.log(err);
+      })
+      .catch(function (err) {
+        console.log(err);
     // return next(err);
   });
-  }
+    }
+  },60000);
 }
 
 function retrieveVerificationCode(id) {
