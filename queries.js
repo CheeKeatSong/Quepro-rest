@@ -100,7 +100,7 @@ setInterval(function(){
   console.log(err);
     // return next(err);
   });
-},30000);
+},90000);
 
 // return status and data
 res.status(200)
