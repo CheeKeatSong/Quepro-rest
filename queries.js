@@ -117,8 +117,8 @@ res.status(200)
 // validate registration - email and phone number
 function registrationValidation(req, res, next) {
 
-  var email = req.params.email;
-  var mobileNumber = req.params.mobileNumber;
+  var email = req.body.email;
+  var mobileNumber = req.body.mobileNumber;
   var message = "Email and mobile number are allowed";
   var statusCode = 200;
 
