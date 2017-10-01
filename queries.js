@@ -200,7 +200,7 @@ function resendSMSCode(req, res, next) {
    res.status(200)
    .json({
     status: 'success',
-    message: 'Verification code email is sent to your phone'
+    message: 'Verification code SMS is sent to your phone'
   });
  })
   .catch(function (err) {
