@@ -121,6 +121,7 @@ function registrationValidation(req, res, next) {
   var mobileNumber = req.body.mobileNumber;
   var message = "Email and mobile number are allowed";
   var statusCode = 200;
+  var status = "success";
 
   console.log(1 + email);
 
@@ -134,18 +135,20 @@ function registrationValidation(req, res, next) {
       if ((email).toLowerCase() == (obj.email).toLowerCase()) {
         statusCode = 400;
         message = "Email is already used to register, please enter another email";
+        status = "fail";
         break;
       }
-      if (mobileNumber == obj.mobileNumber) {
+      if (mobileNumber == obj.mobilenumber) {
         statusCode = 400;
         message = "Mobile Number is already used to register, please enter another mobile number";
+        status = "fail";
         break;
       }
     }
 
     res.status(statusCode)
     .json({
-      status: 'success',
+      status: status,
       message: message
     });
   })
