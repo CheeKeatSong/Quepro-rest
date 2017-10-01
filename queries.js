@@ -131,12 +131,12 @@ function registrationValidation(req, res, next) {
       var obj = data[i];
       console.log(2 + obj.email);
       
-      if ((email).toLowerCase() = (obj.email).toLowerCase()) {
+      if ((email).toLowerCase() == (obj.email).toLowerCase()) {
         statusCode = 400;
         message = "Email is already used to register, please enter another mobile number";
         break;
       }
-      if (mobileNumber = obj.mobileNumber) {
+      if (mobileNumber == obj.mobileNumber) {
         statusCode = 400;
         message = "Mobile Number is already used to register, please enter another mobile number";
         break;
