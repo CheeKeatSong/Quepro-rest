@@ -15,6 +15,7 @@ module.exports = {
   getAllRegistration: getAllRegistration,
   getSingleRegistration: getSingleRegistration,
   createRegistration: createRegistration,
+  registrationValidation: registrationValidation,
   accountVerification: accountVerification,
   createUserAccount: createUserAccount,
   // updateRegistration: updateRegistration,
@@ -56,6 +57,8 @@ function getSingleRegistration(req, res, next) {
   });
 }
 
+
+// create registration
 function createRegistration(req, res, next) {
 
   var firstName = req.body.firstName;
@@ -87,11 +90,6 @@ client.messages.create({
 });
 
 // Delete the registration record after 24 hours
-// var now = new Date();
-// var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0, 0) - now;
-// if (millisTill10 < 0) {
-//      millisTill10 += 86400000; // it's after 10am, try 10am tomorrow.
-//    }
 setInterval(function(){
  db.none('delete from registration WHERE userId=$1', data.userid)
  .then(function () {
@@ -100,7 +98,7 @@ setInterval(function(){
   console.log(err);
     // return next(err);
   });
-},90000);
+},86400000);
 
 // return status and data
 res.status(200)
@@ -114,6 +112,47 @@ res.status(200)
   return next(err);
 });
 }
+
+
+// validate registration - email and phone number
+function registrationValidation(req, res, next) {
+
+  var email = req.params.email;
+  var mobileNumber = req.params.mobileNumber;
+  var message = "Email and mobile number are allowed";
+  var statusCode = 200;
+
+  db.any('select * from Registration')
+  .then(function (data) {
+
+    for(var i = 0; i < data.length; i++) {
+      var obj = data[i];
+      
+      if (email.toLowerCase() = obj.email.toLowerCase()) {
+        console.log(obj);
+        statusCode = 400;
+        message = "Email is already used to register, please enter another mobile number";
+        break;
+      }
+      if (mobileNumber = obj.mobileNumber) {
+        console.log(obj);
+        statusCode = 400;
+        message = "Mobile Number is already used to register, please enter another mobile number";
+        break;
+      }
+    }
+
+    res.status(200)
+    .json({
+      status: 'success',
+      message: message
+    });
+  })
+  .catch(function (err) {
+    return next(err);
+  });
+}
+
 
 // Verify account
 function accountVerification(req, res, next) {
@@ -263,7 +302,7 @@ function resendEmailCode(req, res, next) {
 //   service: 'Gmail',
 //   auth: {
 //     user: 'cheekeatsong@gmail.com',
-//     pass: 'sck.5309'
+//     pass: '12345678'
 //   }
 // });
 
