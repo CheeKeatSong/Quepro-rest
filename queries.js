@@ -64,11 +64,12 @@ function createRegistration(req, res, next) {
   var password = req.body.password;
   var mobileNumber = req.body.mobileNumber;
 
-  var codes = generateVerificationCode();
+// generate verification code
+var codes = generateVerificationCode();
 
-  db.one('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
-    'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING userId', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
-  .then(function (data) {
+db.one('INSERT INTO registration(userid, firstname, lastname, email, password, mobilenumber, verificationCode)' +
+  'VALUES(DEFAULT, $1, $2, $3, $4, $5, $6) RETURNING userId', [firstName, lastName, email, password, mobileNumber, parseInt(codes)])
+.then(function (data) {
 
 // SMS verification code
 // Twilio Credentials 
@@ -85,6 +86,22 @@ client.messages.create({
   console.log(message.sid); 
 });
 
+// Delete the registration record after 24 hours
+var now = new Date();
+var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0, 0) - now;
+if (millisTill10 < 0) {
+     millisTill10 += 86400000; // it's after 10am, try 10am tomorrow.
+   }
+   setTimeout(function(){
+    db.none('delete from registration WHERE userId=$1', body.data.userid)
+    .then(function () {
+    })
+    .catch(function (err) {
+      console.log(err);
+    // return next(err);
+  });}, millisTill10);
+
+// return status and data
 res.status(200)
 .json({
   status: 'success',
@@ -92,10 +109,9 @@ res.status(200)
   message: 'Inserted one registration'
 });
 })
-  .catch(function (err) {
-    return next(err);
-  });
-
+.catch(function (err) {
+  return next(err);
+});
 }
 
 // Verify account
