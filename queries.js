@@ -127,15 +127,14 @@ function registrationValidation(req, res, next) {
 
     for(var i = 0; i < data.length; i++) {
       var obj = data[i];
+      console.log(obj);
       
-      if (email.toLowerCase() = obj.email.toLowerCase()) {
-        console.log(obj);
+      if ((email).toLowerCase() = (obj.email).toLowerCase()) {
         statusCode = 400;
         message = "Email is already used to register, please enter another mobile number";
         break;
       }
       if (mobileNumber = obj.mobileNumber) {
-        console.log(obj);
         statusCode = 400;
         message = "Mobile Number is already used to register, please enter another mobile number";
         break;
