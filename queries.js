@@ -87,19 +87,20 @@ client.messages.create({
 });
 
 // Delete the registration record after 24 hours
-var now = new Date();
+// var now = new Date();
 // var millisTill10 = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0, 0, 0) - now;
 // if (millisTill10 < 0) {
 //      millisTill10 += 86400000; // it's after 10am, try 10am tomorrow.
 //    }
 setInterval(function(){
-  db.none('delete from registration WHERE userId=$1', body.data.userid)
-  .then(function () {
-  })
-  .catch(function (err) {
-    console.log(err);
+ db.none('delete from registration WHERE userId=$1', body.data.userid)
+ .then(function () {
+ })
+ .catch(function (err) {
+  console.log(err);
     // return next(err);
-  });}, 30000);
+  });
+},30000);
 
 // return status and data
 res.status(200)
