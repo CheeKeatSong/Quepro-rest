@@ -124,11 +124,12 @@ function registrationValidation(req, res, next) {
 
   db.any('select * from Registration')
   .then(function (data) {
-    console.log(data);
 
     for(var i = 0; i < data.length; i++) {
       var obj = data[i];
-      console.log(obj);
+      console.log(obj.email);
+      console.log(obj[4]);
+      console.log(obj.anonymous.email);
       
       if ((email).toLowerCase() = (obj.email).toLowerCase()) {
         statusCode = 400;
