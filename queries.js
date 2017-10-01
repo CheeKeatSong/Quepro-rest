@@ -92,7 +92,7 @@ var now = new Date();
 // if (millisTill10 < 0) {
 //      millisTill10 += 86400000; // it's after 10am, try 10am tomorrow.
 //    }
-setTimeout(function(){
+setInterval(function(){
   db.none('delete from registration WHERE userId=$1', body.data.userid)
   .then(function () {
   })
