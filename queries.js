@@ -143,7 +143,7 @@ function registrationValidation(req, res, next) {
       }
     }
 
-    res.status(200)
+    res.status(statusCode)
     .json({
       status: 'success',
       message: message
