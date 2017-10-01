@@ -133,7 +133,7 @@ function registrationValidation(req, res, next) {
       
       if ((email).toLowerCase() == (obj.email).toLowerCase()) {
         statusCode = 400;
-        message = "Email is already used to register, please enter another mobile number";
+        message = "Email is already used to register, please enter another email";
         break;
       }
       if (mobileNumber == obj.mobileNumber) {
