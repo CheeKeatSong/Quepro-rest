@@ -122,7 +122,7 @@ function registrationValidation(req, res, next) {
   var message = "Email and mobile number are allowed";
   var statusCode = 200;
 
-  console.log(1 + obj.email);
+  console.log(1 + email);
 
   db.any('select * from Registration')
   .then(function (data) {
