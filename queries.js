@@ -163,7 +163,7 @@ function registrationValidation(req, res, next) {
     for(var i = 0; i < data.length; i++) {
       var obj = data[i];
       
-        console.log(1 + mobileNumber + "   " + obj.mobileNumber)
+      console.log("registrationValidation   " + mobileNumber + "   " + obj.mobileNumber);
       
       if ((email).toLowerCase() == (obj.email).toLowerCase()) {
         statusCode = 400;
@@ -230,7 +230,7 @@ function createUserAccount(req, res, next) {
   var password = req.body.password;
   var mobileNumber = req.body.mobilenumber;
 
-  db.none('INSERT INTO users VALUES(DEFAULT, $1, $2, $3, $4, $5, 0, 60, true, 60, true, 0)', [firstName, lastName, email, password, mobileNumber, verificationCode])
+  db.none('INSERT INTO users VALUES(DEFAULT, $1, $2, $3, $4, $5, 0, 60, true, 60, true, 0)', [firstName, lastName, email, password, mobileNumber])
   .then(function () {
     res.status(200)
     .json({
