@@ -28,6 +28,14 @@ module.exports = {
   resetPassword: resetPassword
 };
 
+function resetPasswordVerificationCode(req, res, next) {
+  // body...
+}
+
+function resetPassword(req, res, next) {
+  // body...
+}
+
 // create registration
 function loginCredentialRetrieval(req, res, next) {
 
