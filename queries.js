@@ -41,7 +41,7 @@ function loginCredentialRetrieval(req, res, next) {
 
   var email = req.body.email;
 
-  db.any('select * from users WHERE email=$1', email)
+  db.one('select * from users WHERE email=$1', email)
   .then(function (data) {
 
 // return status and data
