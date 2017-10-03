@@ -158,7 +158,7 @@ function registrationValidation(req, res, next) {
 
   console.log(1 + email);
 
-  db.any('select * from Registration')
+  db.any('select * from users')
   .then(function (data) {
 
     for(var i = 0; i < data.length; i++) {
