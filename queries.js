@@ -172,6 +172,7 @@ function registrationValidation(req, res, next) {
         break;
       }
       if (mobileNumber == obj.mobilenumber) {
+        console.log(mobileNumber + "   " + obj.mobilenumber)
         statusCode = 400;
         message = "Mobile Number is already used to register, please enter another mobile number";
         status = "fail";
