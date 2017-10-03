@@ -156,14 +156,14 @@ function registrationValidation(req, res, next) {
   var statusCode = 200;
   var status = "success";
 
-  console.log(1 + email);
 
   db.any('select * from users')
   .then(function (data) {
 
     for(var i = 0; i < data.length; i++) {
       var obj = data[i];
-      console.log(2 + obj.email);
+      
+        console.log(1 + mobileNumber + "   " + obj.mobilenumber)
       
       if ((email).toLowerCase() == (obj.email).toLowerCase()) {
         statusCode = 400;
@@ -172,7 +172,6 @@ function registrationValidation(req, res, next) {
         break;
       }
       if (mobileNumber == obj.mobilenumber) {
-        console.log(mobileNumber + "   " + obj.mobilenumber)
         statusCode = 400;
         message = "Mobile Number is already used to register, please enter another mobile number";
         status = "fail";
