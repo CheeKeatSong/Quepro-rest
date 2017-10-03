@@ -156,7 +156,6 @@ function registrationValidation(req, res, next) {
   var statusCode = 200;
   var status = "success";
 
-
   db.any('select * from users')
   .then(function (data) {
 
@@ -213,7 +212,7 @@ function accountVerification(req, res, next) {
       res.status(400)
       .json({
         status: 'fail',
-        message: 'Verification Code Does Not Match Or Expired!' + accountVerificationId + ' ' + accountVerificationCode + ' ' + data.verificationcode
+        message: 'Verification Code Does Not Match Or Expired!'
       });
     }
   })
