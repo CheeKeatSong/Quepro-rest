@@ -19,4 +19,11 @@ router.post('/api/createUserAccount', db.createUserAccount);
 router.get('/api/resendSMSCode/:id', db.resendSMSCode);
 router.get('/api/resendEmailCode/:id', db.resendEmailCode);
 
+//Account login
+router.post('/api/loginCredentialRetrieval', db.loginCredentialRetrieval);
+
+//Password reset
+router.get('/api/resetPasswordVerificationCode', db.resetPasswordVerificationCode);
+router.post('/api/resetPassword', db.resetPassword);
+
 module.exports = router;

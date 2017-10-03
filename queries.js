@@ -1,4 +1,5 @@
 var promise = require('bluebird');
+var bcrypt = require('bcryptjs');
 
 var options = {
   // Initialization Options
@@ -21,8 +22,32 @@ module.exports = {
   // updateRegistration: updateRegistration,
   // removeRegistration: removeRegistration,
   resendEmailCode: resendEmailCode,
-  resendSMSCode : resendSMSCode
+  resendSMSCode : resendSMSCode,
+  loginCredentialRetrieval: loginCredentialRetrieval,
+  resetPasswordVerificationCode: resetPasswordVerificationCode,
+  resetPassword: resetPassword
 };
+
+// create registration
+function loginCredentialRetrieval(req, res, next) {
+
+  var email = req.body.email;
+
+  db.one('select * from users WHERE email=$1', email)
+  .then(function (data) {
+
+// return status and data
+res.status(200)
+.json({
+  status: 'success',
+  data: data,
+  message: 'Found the email'
+});
+})
+  .catch(function (err) {
+    return next(err);
+  });
+}
 
 function getAllRegistration(req, res, next) {
   db.any('select * from Registration')
@@ -395,3 +420,4 @@ function generateVerificationCode() {
   var codes = generator.generateCodes(pattern, howMany, options);
   return parseInt(codes);
 }
+
