@@ -403,7 +403,6 @@ function sendPasswordResetSMSCode(req, res, next) {
       console.log(err);
     });
    }
-
    removePasswordResetVerificationCodeAfter60Seconds(id);
 
    res.status(200)
