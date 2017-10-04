@@ -182,8 +182,6 @@ function accountVerification(req, res, next) {
   db.one('select * from Registration where userId = $1', accountVerificationId)
   .then(function (data) {
 
-    console.log(data.verificationcode + "   " + data.verificationcode);
-
     if(data.verificationcode == accountVerificationCode) {
       res.status(200)
       .json({
@@ -468,15 +466,15 @@ function sendPasswordResetEmailCode(req, res, next) {
 // Verify account
 function resetPasswordVerification(req, res, next) {
 
-  var accountVerificationId = req.body.id;
-  var accountVerificationCode = req.body.verificationcode;
+  var resetPasswordVerificationId = req.body.id;
+  var resetPasswordVerificationCode = req.body.verificationcode;
 
-  db.one('select * from users where userId = $1', accountVerificationId)
+  db.one('select * from users where userId = $1', resetPasswordVerificationId)
   .then(function (data) {
 
     console.log(data.verificationcode + "   " + data.verificationcode);
 
-    if(data.verificationCode == accountVerificationCode) {
+    if(data.verificationCode == resetPasswordVerificationCode) {
       res.status(200)
       .json({
         status: 'success',
@@ -496,11 +494,24 @@ function resetPasswordVerification(req, res, next) {
   });
 }
 
+
 function resetPassword(req, res, next) {
-  // body...
+
+ var resetPasswordVerificationId = req.body.id;
+ var newPassword = req.body.newPassword;
+
+ db.one('update users set password=$1 where userId=$2', [newPassword, resetPasswordVerificationId])
+ .then(function () {
+  res.status(200)
+  .json({
+    status: 'success',
+    message: 'Password Renewal Success!'
+  });
+})
+ .catch(function (err) {
+  return next(err);
+});
 }
-
-
 
 
 // // Send mail with registered email - 1
