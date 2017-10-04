@@ -385,7 +385,7 @@ function sendPasswordResetSMSCode(req, res, next) {
     if ( newUser[6] == 0 ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
-      db.none('update users set verificationCode=$1 WHERE '+'"userId"'+'=$2', [code,id])
+      db.none('update users set "verificationCode"=$1 WHERE '+'"userId"'+'=$2', [code,id])
       .then(function () {
         console.log("1pass");
         twilioSMSVerificationCode(code);
@@ -432,7 +432,7 @@ function sendPasswordResetEmailCode(req, res, next) {
     if ( newUser[6] == 0 ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
-      db.none('update users set verificationCode=$1 WHERE '+'"userId"'+'=$2', [code,id])
+      db.none('update users set "verificationCode"=$1 WHERE '+'"userId"'+'=$2', [code,id])
       .then(function () {
         console.log("1pass");
         mailgunVerificationCode(code);
