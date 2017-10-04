@@ -39,7 +39,7 @@ function resetPassword(req, res, next) {
 
 function getUserById(req, res, next) {
 
-  var userId = req.params.id;
+  var userId = req.params.userid;
 
   db.one('select * from users where userId = $1', userId)
   .then(function (data) {
