@@ -26,7 +26,8 @@ module.exports = {
   loginCredentialRetrieval: loginCredentialRetrieval,
   resetPasswordVerificationCode: resetPasswordVerificationCode,
   resetPassword: resetPassword,
-  getUserById: getUserById
+  getUserById: getUserById,
+  getUserByMobileNumber: getUserByMobileNumber
 };
 
 function resetPasswordVerificationCode(req, res, next) {
@@ -42,6 +43,24 @@ function getUserById(req, res, next) {
   var userId = req.params.id;
 
   db.one('select * from users WHERE' + '"userId"' + '=$1', userId)
+  .then(function (data) {
+    res.status(200)
+    .json({
+      status: 'success',
+      data: data,
+      message: 'Retrieved user'
+    });
+  })
+  .catch(function (err) {
+    return next(err);
+  });
+}
+
+function getUserByMobileNumber(req, res, next) {
+
+  var mobileNumber = req.params.mobileNumber;
+
+  db.one('select * from users WHERE' + '"mobileNumber"' + '=$1', mobileNumber)
   .then(function (data) {
     res.status(200)
     .json({
