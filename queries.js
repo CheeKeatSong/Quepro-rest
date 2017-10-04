@@ -498,7 +498,7 @@ function resetPassword(req, res, next) {
  var resetPasswordVerificationId = req.body.id;
  var newPassword = req.body.newPassword;
 
- db.one('update users set password=$1 where '+'"userId"'+'=$2', [newPassword, resetPasswordVerificationId])
+ db.none('update users set password=$1 where '+'"userId"'+'=$2', [newPassword, resetPasswordVerificationId])
  .then(function () {
   res.status(200)
   .json({
