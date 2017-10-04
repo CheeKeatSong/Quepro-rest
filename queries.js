@@ -382,7 +382,7 @@ function sendPasswordResetSMSCode(req, res, next) {
 
     var newUser = Object.keys(data).map(function(k) { return data[k] });
 
-    if ( newUser[6] == "0" ) {
+    if ( newUser[6] == 0 ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
       db.none('update users set verificationCode=$1 WHERE '+'"userId"'+'=$2', [code,id])
@@ -426,7 +426,7 @@ function sendPasswordResetEmailCode(req, res, next) {
 
     var newUser = Object.keys(data).map(function(k) { return data[k] });
 
-    if ( newUser[6] == "0" ) {
+    if ( newUser[6] == 0 ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
       db.none('update users set verificationCode=$1 WHERE '+'"userId"'+'=$2', [code,id])
