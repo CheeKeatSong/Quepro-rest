@@ -466,12 +466,12 @@ function sendPasswordResetEmailCode(req, res, next) {
 function resetPasswordVerification(req, res, next) {
 
   var resetPasswordVerificationId = req.body.id;
-  var resetPasswordVerificationCode = req.body.verificationcode;
+  var resetPasswordVerificationCode = req.body.verificationCode;
 
   db.one('select * from users where '+'"userId"'+'=$1', resetPasswordVerificationId)
   .then(function (data) {
 
-    console.log(data.verificationcode + "   " + data.verificationcode);
+    console.log(data.verificationCode + "   " + data.verificationCode);
 
     if(data.verificationCode == resetPasswordVerificationCode) {
       res.status(200)
