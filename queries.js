@@ -11,89 +11,35 @@ var connectionString = 'postgres://fricllllwdgdcz:c662f335a1a8860c37703282aceed2
 var db = pgp(connectionString);
 
 // add query functions
-
 module.exports = {
+
+  //Registration method
   getAllRegistration: getAllRegistration,
   getSingleRegistration: getSingleRegistration,
   createRegistration: createRegistration,
   registrationValidation: registrationValidation,
-  accountVerification: accountVerification,
-  createUserAccount: createUserAccount,
   // updateRegistration: updateRegistration,
   // removeRegistration: removeRegistration,
-  resendEmailCode: resendEmailCode,
-  resendSMSCode : resendSMSCode,
+
+  //Account verification method
+  accountVerification: accountVerification,
+  createUserAccount: createUserAccount,  
+  sendAccountVerificationEmailCode: sendAccountVerificationEmailCode,
+  sendAccountVerificationSMSCode : sendAccountVerificationSMSCode,
+
+  //Account login
   loginCredentialRetrieval: loginCredentialRetrieval,
-  resetPasswordVerificationCode: resetPasswordVerificationCode,
-  resetPassword: resetPassword,
-  getUserById: getUserById,
-  getUserByMobileNumber: getUserByMobileNumber
+
+//User method
+getUserById: getUserById,
+getUserByMobileNumber: getUserByMobileNumber
+
+//Password reset
+sendPasswordResetEmailCode: sendPasswordResetEmailCode,
+sendPasswordResetSMSCode : sendPasswordResetSMSCode,
+resetPasswordVerification: resetPasswordVerification,
+resetPassword: resetPassword
 };
-
-function resetPasswordVerificationCode(req, res, next) {
-  // body...
-}
-
-function resetPassword(req, res, next) {
-  // body...
-}
-
-function getUserById(req, res, next) {
-
-  var userId = req.params.id;
-
-  db.one('select * from users WHERE' + '"userId"' + '=$1', userId)
-  .then(function (data) {
-    res.status(200)
-    .json({
-      status: 'success',
-      data: data,
-      message: 'Retrieved user'
-    });
-  })
-  .catch(function (err) {
-    return next(err);
-  });
-}
-
-function getUserByMobileNumber(req, res, next) {
-
-  var mobileNumber = req.params.mobileNumber;
-
-  db.one('select * from users WHERE' + '"mobileNumber"' + '=$1', mobileNumber)
-  .then(function (data) {
-    res.status(200)
-    .json({
-      status: 'success',
-      data: data,
-      message: 'Retrieved user'
-    });
-  })
-  .catch(function (err) {
-    return next(err);
-  });
-}
-
-// create registration
-function loginCredentialRetrieval(req, res, next) {
-
-  var email = req.body.email;
-
-  db.one('select * from users WHERE email=$1', email)
-  .then(function (data) {
-
-// return status and data
-res.status(200)
-.json({
-  status: 'success',
-  data: data,
-  message: 'Found the email'
-});
-})
-  .catch(function (err) {
-    return next(err);
-  });
-}
 
 function getAllRegistration(req, res, next) {
   db.any('select * from Registration')
@@ -183,7 +129,6 @@ res.status(200)
   return next(err);
 });
 }
-
 
 // validate registration - email and phone number
 function registrationValidation(req, res, next) {
@@ -280,7 +225,7 @@ function createUserAccount(req, res, next) {
   });
 }
 
-function resendSMSCode(req, res, next) {
+function sendAccountVerificationSMSCode(req, res, next) {
 
   var id = parseInt(req.params.id);
 
@@ -325,7 +270,7 @@ function resendSMSCode(req, res, next) {
   });
 }
 
-function resendEmailCode(req, res, next) {
+function sendAccountVerificationEmailCode(req, res, next) {
 
   var id = parseInt(req.params.id);
 
@@ -369,6 +314,194 @@ function resendEmailCode(req, res, next) {
     return next(err);
   });
 }
+
+
+// create registration
+function loginCredentialRetrieval(req, res, next) {
+
+  var email = req.body.email;
+
+  db.one('select * from users WHERE email=$1', email)
+  .then(function (data) {
+
+// return status and data
+res.status(200)
+.json({
+  status: 'success',
+  data: data,
+  message: 'Found the email'
+});
+})
+  .catch(function (err) {
+    return next(err);
+  });
+}
+
+
+function getUserById(req, res, next) {
+
+  var userId = req.params.id;
+
+  db.one('select * from users WHERE' + '"userId"' + '=$1', userId)
+  .then(function (data) {
+    res.status(200)
+    .json({
+      status: 'success',
+      data: data,
+      message: 'Retrieved user'
+    });
+  })
+  .catch(function (err) {
+    return next(err);
+  });
+}
+
+function getUserByMobileNumber(req, res, next) {
+
+  var mobileNumber = req.params.mobileNumber;
+
+  db.one('select * from users WHERE' + '"mobileNumber"' + '=$1', mobileNumber)
+  .then(function (data) {
+    res.status(200)
+    .json({
+      status: 'success',
+      data: data,
+      message: 'Retrieved user'
+    });
+  })
+  .catch(function (err) {
+    return next(err);
+  });
+}
+
+
+function sendPasswordResetSMSCode(req, res, next) {
+
+  var id = parseInt(req.params.id);
+
+  db.one('select * from users WHERE userId=$1', id)
+  .then(function (data) {
+
+    var newUser = Object.keys(data).map(function(k) { return data[k] });
+
+    if ( newUser[6] == "0" ) {
+      var code = generateVerificationCode();
+      console.log(id + ' ' + code);
+      db.none('update users set verificationcode=$1 WHERE userId=$2', [code,id])
+      .then(function () {
+        twilioSMSVerificationCode(code);
+      })
+      .catch(function (err) {
+        return next(err);
+        console.log(err);
+      });
+    }else{
+     db.one('select * from users WHERE userId=$1', id)
+     .then(function (data) {
+       var newUser = Object.keys(data).map(function(k) { return data[k] });
+       twilioSMSVerificationCode(newUser[6]);
+     }) .catch(function (err) {
+      return next(err);
+      console.log(err);
+    });
+   }
+
+   removeVerificationCodeAfter60Seconds(id);
+
+   res.status(200)
+   .json({
+    status: 'success',
+    message: 'Verification code SMS is sent to your phone'
+  });
+ })
+  .catch(function (err) {
+    console.log(err);
+    return next(err);
+  });
+}
+
+function sendPasswordResetEmailCode(req, res, next) {
+
+  var id = parseInt(req.params.id);
+
+  db.one('select * from users WHERE userId=$1', id)
+  .then(function (data) {
+
+    var newUser = Object.keys(data).map(function(k) { return data[k] });
+
+    if ( newUser[6] == "0" ) {
+      var code = generateVerificationCode();
+      console.log(id + ' ' + code);
+      db.none('update users set verificationcode=$1 WHERE userId=$2', [code,id])
+      .then(function () {
+        mailgunVerificationCode(code);
+      })
+      .catch(function (err) {
+        return next(err);
+        console.log(err);
+      });
+    }else{
+     db.one('select * from users WHERE userId=$1', id)
+     .then(function (data) {
+       var newUser = Object.keys(data).map(function(k) { return data[k] });
+       mailgunVerificationCode(newUser[6]);
+     }) .catch(function (err) {
+      return next(err);
+      console.log(err);
+    });
+   }
+
+   removeVerificationCodeAfter60Seconds(id);
+
+   res.status(200)
+   .json({
+    status: 'success',
+    message: 'Verification code email is sent to your phone'
+  });
+ })
+  .catch(function (err) {
+    console.log(err);
+    return next(err);
+  });
+}
+
+// Verify account
+function resetPasswordVerification(req, res, next) {
+
+  var accountVerificationId = req.body.id;
+  var accountVerificationCode = req.body.verificationcode;
+
+  db.one('select * from users where userId = $1', accountVerificationId)
+  .then(function (data) {
+
+    console.log(data.verificationcode + "   " + data.verificationcode);
+
+    if(data.verificationCode == accountVerificationCode) {
+      res.status(200)
+      .json({
+        status: 'success',
+        data: data,
+        message: 'Account Verification Success!'
+      });
+    }else{
+      res.status(400)
+      .json({
+        status: 'fail',
+        message: 'Verification Code Does Not Match Or Expired!'
+      });
+    }
+  })
+  .catch(function (err) {
+    return next(err);
+  });
+}
+
+function resetPassword(req, res, next) {
+  // body...
+}
+
+
+
 
 // // Send mail with registered email - 1
 // var nodemailer = require('nodemailer');

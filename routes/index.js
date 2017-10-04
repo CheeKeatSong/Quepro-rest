@@ -18,16 +18,16 @@ router.get('/api/getUserById/:mobileNumber', db.getUserByMobileNumber);
 //Account verification method
 router.post('/api/accountVerification', db.accountVerification);
 router.post('/api/createUserAccount', db.createUserAccount);
-
-//Account verification code method
-router.get('/api/resendSMSCode/:id', db.resendSMSCode);
-router.get('/api/resendEmailCode/:id', db.resendEmailCode);
+router.get('/api/sendAccountVerificationSMSCode/:id', db.sendAccountVerificationSMSCode);
+router.get('/api/sendAccountVerificationEmailCode/:id', db.sendAccountVerificationEmailCode);
 
 //Account login
 router.post('/api/loginCredentialRetrieval', db.loginCredentialRetrieval);
 
 //Password reset
-router.get('/api/resetPasswordVerificationCode', db.resetPasswordVerificationCode);
+router.get('/api/sendPasswordResetSMSCode/:id', db.sendPasswordResetSMSCode);
+router.get('/api/sendPasswordResetEmailCode/:id', db.sendPasswordResetEmailCode);
+router.post('/api/resetPasswordVerification', db.resetPasswordVerification);
 router.post('/api/resetPassword', db.resetPassword);
 
 module.exports = router;
