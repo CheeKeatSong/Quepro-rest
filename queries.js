@@ -375,9 +375,9 @@ function getUserByMobileNumber(req, res, next) {
 
 function sendPasswordResetSMSCode(req, res, next) {
 
-  var id = parseInt(req.params.userId);
+  var id = parseInt(req.params.id);
 
-  db.one('select * from users WHERE userId=$1', id)
+  db.one('select * from users WHERE '+'"userId"'+'=$1', id)
   .then(function (data) {
 
     var newUser = Object.keys(data).map(function(k) { return data[k] });
@@ -385,7 +385,7 @@ function sendPasswordResetSMSCode(req, res, next) {
     if ( newUser[6] == "0" ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
-      db.none('update users set verificationcode=$1 WHERE userId=$2', [code,id])
+      db.none('update users set verificationcode=$1 WHERE '+'"userId"'+'=$2', [code,id])
       .then(function () {
         twilioSMSVerificationCode(code);
       })
@@ -394,7 +394,7 @@ function sendPasswordResetSMSCode(req, res, next) {
         console.log(err);
       });
     }else{
-     db.one('select * from users WHERE userId=$1', id)
+     db.one('select * from users WHERE '+'"userId"'+'=$1', id)
      .then(function (data) {
        var newUser = Object.keys(data).map(function(k) { return data[k] });
        twilioSMSVerificationCode(newUser[6]);
@@ -420,9 +420,9 @@ function sendPasswordResetSMSCode(req, res, next) {
 
 function sendPasswordResetEmailCode(req, res, next) {
 
-  var id = parseInt(req.params.userId);
+  var id = parseInt(req.params.id);
 
-  db.one('select * from users WHERE userId=$1', id)
+  db.one('select * from users WHERE '+'"userId"'+'=$1', id)
   .then(function (data) {
 
     var newUser = Object.keys(data).map(function(k) { return data[k] });
@@ -430,7 +430,7 @@ function sendPasswordResetEmailCode(req, res, next) {
     if ( newUser[6] == "0" ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
-      db.none('update users set verificationcode=$1 WHERE userId=$2', [code,id])
+      db.none('update users set verificationcode=$1 WHERE '+'"userId"'+'=$2', [code,id])
       .then(function () {
         mailgunVerificationCode(code);
       })
@@ -439,7 +439,7 @@ function sendPasswordResetEmailCode(req, res, next) {
         console.log(err);
       });
     }else{
-     db.one('select * from users WHERE userId=$1', id)
+     db.one('select * from users WHERE '+'"userId"'+'=$1', id)
      .then(function (data) {
        var newUser = Object.keys(data).map(function(k) { return data[k] });
        mailgunVerificationCode(newUser[6]);
@@ -469,7 +469,7 @@ function resetPasswordVerification(req, res, next) {
   var resetPasswordVerificationId = req.body.id;
   var resetPasswordVerificationCode = req.body.verificationcode;
 
-  db.one('select * from users where userId = $1', resetPasswordVerificationId)
+  db.one('select * from users where '+'"userId"'+'=$1', resetPasswordVerificationId)
   .then(function (data) {
 
     console.log(data.verificationcode + "   " + data.verificationcode);
@@ -500,7 +500,7 @@ function resetPassword(req, res, next) {
  var resetPasswordVerificationId = req.body.id;
  var newPassword = req.body.newPassword;
 
- db.one('update users set password=$1 where userId=$2', [newPassword, resetPasswordVerificationId])
+ db.one('update users set password=$1 where '+'"userId"'+'=$2', [newPassword, resetPasswordVerificationId])
  .then(function () {
   res.status(200)
   .json({
