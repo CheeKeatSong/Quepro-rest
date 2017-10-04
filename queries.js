@@ -387,23 +387,20 @@ function sendPasswordResetSMSCode(req, res, next) {
       console.log(id + ' ' + code);
       db.none('update users set "verificationCode"=$1 WHERE '+'"userId"'+'=$2', [code,id])
       .then(function () {
-        console.log("1pass");
         twilioSMSVerificationCode(code);
       })
       .catch(function (err) {
         return next(err);
-        // console.log(err);
+        console.log(err);
       });
     }else{
      db.one('select * from users WHERE '+'"userId"'+'=$1', id)
      .then(function (data) {
-      console.log("1pass");
       var newUser = Object.keys(data).map(function(k) { return data[k] });
       twilioSMSVerificationCode(newUser[6]);
     }) .catch(function (err) {
-      console.log("1fail");
       return next(err);
-      // console.log(err);
+      console.log(err);
     });
   }
   removePasswordResetVerificationCodeAfter60Seconds(id);
@@ -431,26 +428,22 @@ function sendPasswordResetEmailCode(req, res, next) {
 
     if ( newUser[6] == 0 ) {
       var code = generateVerificationCode();
-      console.log(id + ' ' + code);
       db.none('update users set "verificationCode"=$1 WHERE '+'"userId"'+'=$2', [code,id])
       .then(function () {
-        console.log("1pass");
         mailgunVerificationCode(code);
       })
       .catch(function (err) {
         return next(err);
-        // console.log(err);
+        console.log(err);
       });
     }else{
      db.one('select * from users WHERE '+'"userId"'+'=$1', id)
      .then(function (data) {
-      console.log("1pass");
       var newUser = Object.keys(data).map(function(k) { return data[k] });
       mailgunVerificationCode(newUser[6]);
     }) .catch(function (err) {
       return next(err);
-      console.log("1fail");
-      // console.log(err);
+      console.log(err);
     });
   }
 
@@ -568,7 +561,7 @@ function removeAccountVerificationCodeAfter60Seconds(id) {
 
 function removePasswordResetVerificationCodeAfter60Seconds(id) {
   setInterval(function(){
-    db.none('update users set verificationCode=0 WHERE '+'"userId"'+'=$1', id)
+    db.none('update users set "verificationCode"=0 WHERE '+'"userId"'+'=$1', id)
     .then(function () {
     })
     .catch(function (err) {
