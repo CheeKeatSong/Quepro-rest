@@ -377,7 +377,7 @@ function sendPasswordResetSMSCode(req, res, next) {
 
   var id = parseInt(req.params.id);
 
-  db.one('select * from users WHERE userId=$1', id)
+  db.one('select * from users WHERE '+'"userId"'+'=$1', id)
   .then(function (data) {
 
     var newUser = Object.keys(data).map(function(k) { return data[k] });
@@ -385,32 +385,35 @@ function sendPasswordResetSMSCode(req, res, next) {
     if ( newUser[6] == 0 ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
-      db.none('update users set verificationCode=$1 WHERE userId=$2', [code,id])
+      db.none('update users set verificationCode=$1 WHERE '+'"userId"'+'=$2', [code,id])
       .then(function () {
+        console.log("1pass");
         twilioSMSVerificationCode(code);
       })
       .catch(function (err) {
         return next(err);
-        console.log(err);
+        // console.log(err);
       });
     }else{
-     db.one('select * from users WHERE userId=$1', id)
+     db.one('select * from users WHERE '+'"userId"'+'=$1', id)
      .then(function (data) {
-       var newUser = Object.keys(data).map(function(k) { return data[k] });
-       twilioSMSVerificationCode(newUser[6]);
-     }) .catch(function (err) {
+      console.log("1pass");
+      var newUser = Object.keys(data).map(function(k) { return data[k] });
+      twilioSMSVerificationCode(newUser[6]);
+    }) .catch(function (err) {
+      console.log("1fail");
       return next(err);
-      console.log(err);
+      // console.log(err);
     });
-   }
-   removePasswordResetVerificationCodeAfter60Seconds(id);
+  }
+  removePasswordResetVerificationCodeAfter60Seconds(id);
 
-   res.status(200)
-   .json({
+  res.status(200)
+  .json({
     status: 'success',
     message: 'Verification code SMS is sent to your phone'
   });
- })
+})
   .catch(function (err) {
     console.log(err);
     return next(err);
@@ -421,7 +424,7 @@ function sendPasswordResetEmailCode(req, res, next) {
 
   var id = parseInt(req.params.id);
 
-  db.one('select * from users WHERE userId=$1', id)
+  db.one('select * from users WHERE '+'"userId"'+'=$1', id)
   .then(function (data) {
 
     var newUser = Object.keys(data).map(function(k) { return data[k] });
@@ -429,33 +432,36 @@ function sendPasswordResetEmailCode(req, res, next) {
     if ( newUser[6] == 0 ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
-      db.none('update users set verificationCode=$1 WHERE userId=$2', [code,id])
+      db.none('update users set verificationCode=$1 WHERE '+'"userId"'+'=$2', [code,id])
       .then(function () {
+        console.log("1pass");
         mailgunVerificationCode(code);
       })
       .catch(function (err) {
         return next(err);
-        console.log(err);
+        // console.log(err);
       });
     }else{
-     db.one('select * from users WHERE userId=$1', id)
+     db.one('select * from users WHERE '+'"userId"'+'=$1', id)
      .then(function (data) {
-       var newUser = Object.keys(data).map(function(k) { return data[k] });
-       mailgunVerificationCode(newUser[6]);
-     }) .catch(function (err) {
+      console.log("1pass");
+      var newUser = Object.keys(data).map(function(k) { return data[k] });
+      mailgunVerificationCode(newUser[6]);
+    }) .catch(function (err) {
       return next(err);
-      console.log(err);
+      console.log("1fail");
+      // console.log(err);
     });
-   }
+  }
 
-   removePasswordResetVerificationCodeAfter60Seconds(id);
+  removePasswordResetVerificationCodeAfter60Seconds(id);
 
-   res.status(200)
-   .json({
+  res.status(200)
+  .json({
     status: 'success',
     message: 'Verification code email is sent to your phone'
   });
- })
+})
   .catch(function (err) {
     console.log(err);
     return next(err);
@@ -468,7 +474,7 @@ function resetPasswordVerification(req, res, next) {
   var resetPasswordVerificationId = req.body.id;
   var resetPasswordVerificationCode = req.body.verificationCode;
 
-  db.one('select * from users where userId=$1', resetPasswordVerificationId)
+  db.one('select * from users where '+'"userId"'+'=$1', resetPasswordVerificationId)
   .then(function (data) {
 
     console.log(data.verificationCode + "   " + data.verificationCode);
@@ -499,7 +505,7 @@ function resetPassword(req, res, next) {
  var resetPasswordVerificationId = req.body.id;
  var newPassword = req.body.newPassword;
 
- db.one('update users set password=$1 where userId=$2', [newPassword, resetPasswordVerificationId])
+ db.one('update users set password=$1 where '+'"userId"'+'=$2', [newPassword, resetPasswordVerificationId])
  .then(function () {
   res.status(200)
   .json({
@@ -562,7 +568,7 @@ function removeAccountVerificationCodeAfter60Seconds(id) {
 
 function removePasswordResetVerificationCodeAfter60Seconds(id) {
   setInterval(function(){
-    db.none('update users set verificationCode=0 WHERE userId=$1', id)
+    db.none('update users set verificationCode=0 WHERE '+'"userId"'+'=$1', id)
     .then(function () {
     })
     .catch(function (err) {
