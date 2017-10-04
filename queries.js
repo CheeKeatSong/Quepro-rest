@@ -470,7 +470,7 @@ function resetPasswordVerification(req, res, next) {
   db.one('select * from users where '+'"userId"'+'=$1', resetPasswordVerificationId)
   .then(function (data) {
 
-    console.log(data.verificationCode + "   " + data.verificationCode);
+    console.log(data.verificationCode + "   " + resetPasswordVerificationCode);
 
     if(data.verificationCode == resetPasswordVerificationCode) {
       res.status(200)
