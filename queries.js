@@ -477,7 +477,7 @@ function resetPasswordVerification(req, res, next) {
       .json({
         status: 'success',
         data: data,
-        message: 'Account Verification Success!'
+        message: 'Password Reset Verification Success!'
       });
     }else{
       res.status(400)
