@@ -11,6 +11,9 @@ router.post('/api/registrationValidation', db.registrationValidation);
 // router.put('/api/registration/:id', db.updateRegistration);
 // router.delete('/api/registration/:id', db.removeRegistration);
 
+//User method
+router.get('/api/getUserById/:id', db.getUserById);
+
 //Account verification method
 router.post('/api/accountVerification', db.accountVerification);
 router.post('/api/createUserAccount', db.createUserAccount);

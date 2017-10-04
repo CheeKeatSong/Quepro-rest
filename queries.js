@@ -25,7 +25,8 @@ module.exports = {
   resendSMSCode : resendSMSCode,
   loginCredentialRetrieval: loginCredentialRetrieval,
   resetPasswordVerificationCode: resetPasswordVerificationCode,
-  resetPassword: resetPassword
+  resetPassword: resetPassword,
+ getUserById: getUserById
 };
 
 function resetPasswordVerificationCode(req, res, next) {
@@ -34,6 +35,24 @@ function resetPasswordVerificationCode(req, res, next) {
 
 function resetPassword(req, res, next) {
   // body...
+}
+
+function getUserById(req, res, next) {
+
+  var userId = req.params.id;
+
+  db.one('select * from users where userId = $1', userId)
+  .then(function (data) {
+    res.status(200)
+    .json({
+      status: 'success',
+      data: data,
+      message: 'Retrieved user'
+    });
+  })
+  .catch(function (err) {
+    return next(err);
+  });
 }
 
 // create registration
