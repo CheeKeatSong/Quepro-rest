@@ -254,7 +254,7 @@ function sendAccountVerificationSMSCode(req, res, next) {
     });
    }
 
-   removeVerificationCodeAfter60Seconds(id);
+   removeAccountVerificationCodeAfter60Seconds(id);
 
    res.status(200)
    .json({
@@ -299,7 +299,7 @@ function sendAccountVerificationEmailCode(req, res, next) {
     });
    }
 
-   removeVerificationCodeAfter60Seconds(id);
+   removeAccountVerificationCodeAfter60Seconds(id);
 
    res.status(200)
    .json({
@@ -385,7 +385,7 @@ function sendPasswordResetSMSCode(req, res, next) {
     if ( newUser[6] == "0" ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
-      db.none('update users set verificationcode=$1 WHERE '+'"userId"'+'=$2', [code,id])
+      db.none('update users set verificationCode=$1 WHERE '+'"userId"'+'=$2', [code,id])
       .then(function () {
         twilioSMSVerificationCode(code);
       })
@@ -404,7 +404,7 @@ function sendPasswordResetSMSCode(req, res, next) {
     });
    }
 
-   removeVerificationCodeAfter60Seconds(id);
+   removePasswordResetVerificationCodeAfter60Seconds(id);
 
    res.status(200)
    .json({
@@ -430,7 +430,7 @@ function sendPasswordResetEmailCode(req, res, next) {
     if ( newUser[6] == "0" ) {
       var code = generateVerificationCode();
       console.log(id + ' ' + code);
-      db.none('update users set verificationcode=$1 WHERE '+'"userId"'+'=$2', [code,id])
+      db.none('update users set verificationCode=$1 WHERE '+'"userId"'+'=$2', [code,id])
       .then(function () {
         mailgunVerificationCode(code);
       })
@@ -449,7 +449,7 @@ function sendPasswordResetEmailCode(req, res, next) {
     });
    }
 
-   removeVerificationCodeAfter60Seconds(id);
+   removePasswordResetVerificationCodeAfter60Seconds(id);
 
    res.status(200)
    .json({
@@ -549,9 +549,21 @@ function resetPassword(req, res, next) {
 //       }
 //     });
 
-function removeVerificationCodeAfter60Seconds(id) {
+function removeAccountVerificationCodeAfter60Seconds(id) {
   setInterval(function(){
     db.none('update registration set verificationcode=0 WHERE userId=$1', id)
+    .then(function () {
+    })
+    .catch(function (err) {
+      console.log(err);
+    // return next(err);
+  });
+  },60000);
+}
+
+function removePasswordResetVerificationCodeAfter60Seconds(id) {
+  setInterval(function(){
+    db.none('update users set verificationCode=0 WHERE '+'"userId"'+'=$1', id)
     .then(function () {
     })
     .catch(function (err) {
