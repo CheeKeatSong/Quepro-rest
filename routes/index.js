@@ -13,7 +13,7 @@ router.post('/api/registrationValidation', db.registrationValidation);
 
 //User method
 router.get('/api/getUserById/:id', db.getUserById);
-router.get('/api/getUserById/:mobileNumber', db.getUserByMobileNumber);
+router.get('/api/getUserByMobileNumber/:mobileNumber', db.getUserByMobileNumber);
 
 //Account verification method
 router.post('/api/accountVerification', db.accountVerification);
