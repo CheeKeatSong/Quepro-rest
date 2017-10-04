@@ -32,7 +32,7 @@ module.exports = {
 
 //User method
 getUserById: getUserById,
-getUserByMobileNumber: getUserByMobileNumber
+getUserByMobileNumber: getUserByMobileNumber,
 
 //Password reset
 sendPasswordResetEmailCode: sendPasswordResetEmailCode,
