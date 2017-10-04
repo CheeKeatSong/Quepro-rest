@@ -375,7 +375,7 @@ function getUserByMobileNumber(req, res, next) {
 
 function sendPasswordResetSMSCode(req, res, next) {
 
-  var id = parseInt(req.params.id);
+  var id = parseInt(req.params.userId);
 
   db.one('select * from users WHERE userId=$1', id)
   .then(function (data) {
@@ -420,7 +420,7 @@ function sendPasswordResetSMSCode(req, res, next) {
 
 function sendPasswordResetEmailCode(req, res, next) {
 
-  var id = parseInt(req.params.id);
+  var id = parseInt(req.params.userId);
 
   db.one('select * from users WHERE userId=$1', id)
   .then(function (data) {
